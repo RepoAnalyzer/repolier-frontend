@@ -1,0 +1,62 @@
+$palette: ( 
+    pine: #14471e,
+    mint: #68904d,
+    clay: #c8d2d1,
+    silver: #eeeeee,
+    copper: #ee9b01,
+    orange: #da6a00,
+);
+
+@function p($color) {
+    @warn map-get($palette,$color);
+
+    @if not map-has-key($palette,$color) {
+        @warn "Unknown color `#{$color}` in palette";
+
+        @return null;
+    }
+
+    $color: map-get($palette,$color);
+
+    @return $color;
+}
+
+$palette-semantic: (
+    shadow: rgba(0,0,0,0.22),
+    background: p(silver)
+);
+
+@function ps($color) {
+    @warn map-get($palette-semantic,$color);
+
+    @if not map-has-key($palette-semantic,$color) {
+        @warn "Unknown color `#{$color}` in palette-semantic";
+
+        @return null;
+    }
+
+    $color: map-get($palette-semantic,$color);
+
+    @return $color;
+}
+
+@function c2($color, $tone) {
+    @warn map-get($palette,$color);
+
+    @if map-has-key($palette,$color) {
+        $color: map-get($palette,$color);
+
+            @if map-has-key($color,$tone){
+                $tone: map-get($color,$tone);
+
+                @return $tone;
+            }
+
+            @warn "unknown tone `#{$tone}` in color";
+            @return null;
+    }
+
+    @warn "unknown color `#{$color}` in palette";
+    @return null;
+}
+
