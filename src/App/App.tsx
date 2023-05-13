@@ -1,38 +1,41 @@
 import React from 'react';
-import { semanticPalette } from 'assets/palette/palette';
-import cnBind from 'classnames/bind';
+import { palette, semanticPalette } from 'assets/palette/palette';
 import { observer } from 'mobx-react-lite';
 import styled from 'styled-components'
 
+import { RepoCard } from 'components/repo-card/repo-card';
+import { reposStore } from 'components/repos/repos.store';
 import { SearchBar } from 'components/search-bar/search-bar';
-
-import styles from './App.module.scss';
-
-const cx = cnBind.bind(styles);
 
 export const Button = styled.button`
     color: ${semanticPalette.contrasting};
 `
 
+export const AppStyled = styled.div`
+    background-color: ${semanticPalette.primary};
+`
+
+export const Header = styled.header`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: ${palette.black};
+    padding: 16px 24px;
+`
+
 export const App = observer(() => {
     return (
-        <div className={cx('App')}>
-            <header>
-            </header>
-            <aside>
-                <header></header>
-                <div>
-                    Info about keymappings.
-                </div>
-                <Button>Add to comparison</Button>
-                <p>
-                    {}
-                </p>
-                <footer />
-            </aside>
-            <main>
+        <AppStyled>
+            <Header>
                 <SearchBar />
+            </Header>
+            <main>
+                <hr />
+                <div>
+                    {reposStore.items.length < 1 ? 'Choose a repository' :
+                        reposStore.items.map(repo => <RepoCard key={repo.name} repo={repo} />)}
+                </div>
             </main>
-        </div>
+        </AppStyled>
     );
 });
