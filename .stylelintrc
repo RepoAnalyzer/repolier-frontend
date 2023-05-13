@@ -1,0 +1,15 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-prettier"],
+  "rules": {
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global"]
+      }
+    ],
+    "color-hex-case": "lower",
+    "color-hex-length": "long",
+    "indentation": 4,
+    "no-duplicate-selectors": true
+  }
+}

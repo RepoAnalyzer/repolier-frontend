@@ -1,0 +1,43 @@
+@import "assets/_palette.modules.scss";
+
+.App {
+    text-align: center;
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+.App-logo {
+    height: 40vmin;
+    width: 40vmin;
+    pointer-events: none;
+}
+
+.App {
+    display: flex;
+
+    aside {
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+
+        footer {
+            height: 64px;
+            background-color: ps(background);
+        }
+
+        z-index: 1;
+        box-shadow: 5px 0px 18px 0px ps(shadow);
+    }
+
+    main {
+        background-color: ps(background);
+        width: 80%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: calc(10px + 2vmin);
+        color: white;
+    }
+}
