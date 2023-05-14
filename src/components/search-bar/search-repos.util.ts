@@ -20,6 +20,9 @@ export type SearchResponse = {
 export const ITEMS_PER_PAGE = 5;
 
 export const searchRepos = async (searchTerm: string, sortBy: SortBy): Promise<Repo[]> => {
+    if (!searchTerm) {
+        return [];
+    }
     const response = await fetch(`https://api.github.com/search/repositories?q=${searchTerm}&per_page=${ITEMS_PER_PAGE}&sort=${sortBy as string}`);
 
     const data = await response.json() as SearchResponse;
