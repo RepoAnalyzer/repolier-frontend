@@ -1,5 +1,6 @@
 export const palette = {
-    green: 'hsl(137, 66%, 30%)',
+    green: 'hsl(137, 66%, 34%)',
+    darkGreen: 'hsl(137, 66%, 30%)',
     white: 'hsl(0, 0%, 100%)',
     gray: 'hsl(210, 29%, 97%)',
     blueGray: 'hsl(214, 20%, 93%)',
@@ -21,5 +22,6 @@ export const semanticPalette = {
     },
 
     contrasting: palette.green,
+    contrastingHover: palette.darkGreen,
     contrasting2: palette.blue,
 }

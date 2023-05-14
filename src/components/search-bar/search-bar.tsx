@@ -1,11 +1,13 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
 import { palette, semanticPalette } from 'assets/palette/palette';
 import { debounce } from 'lodash';
 import { observer } from 'mobx-react-lite';
-import OutsideClickHandler from 'react-outside-click-handler';
 import styled from 'styled-components';
 
 import { Repo, reposStore, SortBy } from 'components/repos/repos.store';
+
+import { SearchResult } from './search-result';
 /* import RepoCard from './RepoCard'; */
 
 export type RepoResponse = {
@@ -15,7 +17,7 @@ export type RepoResponse = {
     stargazers_count: number;
     watchers_count: number;
     score: number;
-    owner: { avatar_url: string; };
+    owner: { avatar_url: string; login: string };
     created_at: string;
     updated_at: string;
     html_url: string;
@@ -23,43 +25,6 @@ export type RepoResponse = {
 
 export type SearchResponse = {
     items: Array<RepoResponse>
-}
-
-export type SearchResultProps = {
-    repo: Repo;
-}
-
-const ANIMATION = '0.2s ease-in-out';
-
-export const SearchResultStyled = styled.div`
-    transition: background-color ${ANIMATION};
-
-    &:hover {
-        background-color: ${semanticPalette.hover};
-    }
-`
-
-export const AddToComparisonButton = styled.button`
-    background-color: ${semanticPalette.contrasting};
-
-    transition: opacity ${ANIMATION};
-    opacity: 0;
-
-    div:hover > & {
-        opacity: 1;
-    }
-`
-
-export const SearchResult = (props: SearchResultProps) => {
-    return (
-        <SearchResultStyled>
-            <div>{JSON.stringify(props.repo)}</div>
-            <AddToComparisonButton onClick={() => {
-                reposStore.addToComparison(props.repo)
-                reposStore.searchItems = []
-            }}>Add to comparison</AddToComparisonButton>
-        </SearchResultStyled>
-    );
 }
 
 const sortOptions: { value: SortBy, label: string }[] = [
@@ -92,7 +57,7 @@ const sortFunction = (sortBy: SortBy) => (a: Repo, b: Repo): number => {
 
 const ITEMS_PER_PAGE = 5;
 
-export const searchRepos = async (searchTerm: string, sortBy: SortBy) => {
+export const searchRepos = async (searchTerm: string, sortBy: SortBy): Promise<Repo[]> => {
     const response = await fetch(`https://api.github.com/search/repositories?q=${searchTerm}&per_page=${ITEMS_PER_PAGE}&sort=${sortBy as string}`);
     const data = await response.json() as SearchResponse;
 
@@ -104,6 +69,7 @@ export const searchRepos = async (searchTerm: string, sortBy: SortBy) => {
         watchers: item.watchers_count,
         score: item.score,
         avatar: item.owner.avatar_url,
+        owner: item.owner.login,
         created_at: item.created_at,
         updated_at: item.updated_at,
         url: item.html_url
@@ -118,7 +84,14 @@ export type InputProps = {
     isSearching: boolean;
 }
 
+type SearchBarStyledProps = {
+    isSearching: boolean;
+};
+
 const SearchBarStyled = styled.div<SearchBarStyledProps>`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border-radius: 16px;
     padding: 6px 32px 4px;
     background-color: ${(props) => props.isSearching ? semanticPalette.primary : 'inherit'};
@@ -147,21 +120,22 @@ const Input = styled.input<InputProps>`
     }
 `
 
-type SearchBarStyledProps = {
-    isSearching: boolean;
-};
-
 export const Shimmer = styled.div`
     background-color: red;
 `
 
+export const SearchResultsStyled = styled.ol`
+    padding: 0;
+    list-style-type: none;
+`
+
 export const SearchResults = observer(() =>
-    <div >
+    <SearchResultsStyled>
         {
             reposStore.searchItems.length < 1 ? Array(ITEMS_PER_PAGE).fill(undefined).map((_item, key) => <Shimmer key={`shimmer - ${key} `} />) :
                 reposStore.searchItems.slice().sort(sortFunction(reposStore.sortBy)).map(repo => <SearchResult key={repo.name} repo={repo} />)
         }
-    </div >
+    </SearchResultsStyled>
 )
 
 export const SearchBar = observer(() => {
