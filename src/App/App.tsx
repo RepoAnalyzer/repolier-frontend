@@ -16,11 +16,16 @@ export const AppStyled = styled.div`
 `
 
 export const Header = styled.header`
+    min-height: 59px;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: ${palette.black};
     padding: 16px 24px;
+`
+
+export const Main = styled.main`
+
 `
 
 export const App = observer(() => {
@@ -29,13 +34,13 @@ export const App = observer(() => {
             <Header>
                 <SearchBar />
             </Header>
-            <main>
+            <Main>
                 <hr />
                 <div>
                     {reposStore.items.length < 1 ? 'Choose a repository' :
                         reposStore.items.map(repo => <RepoCard key={repo.name} repo={repo} />)}
                 </div>
-            </main>
+            </Main>
         </AppStyled>
     );
 });
