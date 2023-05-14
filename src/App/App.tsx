@@ -44,7 +44,14 @@ export const App = observer(() => {
             <Main>
                 <RepoCards>
                     {reposStore.items.length < 1 ? 'Choose a repository' :
-                        reposStore.items.map(repo => <RepoCard key={repo.name} repo={repo} />)}
+                        reposStore.items.map(repo => (
+                            <RepoCard
+                                key={repo.name}
+                                repo={repo}
+                                onRemoveFromComparison={(repo) => reposStore.removeFromComparison(repo)}
+                                onRepoDetailedComparisonCheck={(e) => reposStore.setDetailedComparison(e.target.id, e.target.checked)}
+                            />
+                        ))}
                 </RepoCards>
             </Main>
         </AppStyled>

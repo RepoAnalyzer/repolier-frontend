@@ -59,7 +59,7 @@ export const SearchResults = observer(() => {
             {
                 reposStore.searchItems.slice().sort(sortFunction(reposStore.sortBy)).map(repo => (
                     <SearchResult
-                        key={repo.name}
+                        key={`${repo.owner}/${repo.name}`}
                         repo={repo}
                         onAddToComparisonClick={(repo) => { reposStore.addToComparison(repo) }}
                     />)
