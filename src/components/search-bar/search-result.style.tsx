@@ -3,6 +3,53 @@ import { semanticPalette } from "assets/palette/palette";
 
 const ANIMATION = '0.2s ease-in-out';
 
+export type ComparisonButtonProps = {
+    preset?: 'add' | 'remove'
+}
+
+export const ComparisonButton = styled.button<ComparisonButtonProps>`
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid ${(props) => {
+        if (props.preset === 'add') {
+            return semanticPalette.contrastingHover;
+        }
+
+        return semanticPalette.error;
+    }};
+    padding: 8px;
+    background-color: ${(props) => {
+        if (props.preset === 'add') {
+            return semanticPalette.contrasting;
+        }
+
+        return semanticPalette.primary;
+    }};
+    color: ${(props) => {
+        if (props.preset === 'add') {
+            return semanticPalette.primary;
+        }
+
+        return semanticPalette.error;
+    }};
+    font-weight: 600;
+
+    transition: opacity ${ANIMATION};
+    opacity: 0;
+
+    &:hover {
+        border: 1px solid ${semanticPalette.contrasting};
+        color: ${semanticPalette.primary};
+        background-color: ${(props) => {
+        if (props.preset === 'add') {
+            return semanticPalette.contrastingHover;
+        }
+
+        return semanticPalette.errorHover;
+    }};
+    }
+`
+
 export const SearchResultStyled = styled.li`
     padding: 8px;
     max-width: 800px;
@@ -12,25 +59,8 @@ export const SearchResultStyled = styled.li`
     &:hover {
         background-color: ${semanticPalette.hover};
     }
-`
 
-export const AddToComparisonButton = styled.button`
-    border-radius: 6px;
-    border: 1px solid ${semanticPalette.contrastingHover};
-    padding: 8px;
-    background-color: ${semanticPalette.contrasting};
-    color: ${semanticPalette.primary};
-    font-weight: 600;
-
-    transition: opacity ${ANIMATION};
-    opacity: 0;
-
-    &:hover {
-        border: 1px solid ${semanticPalette.contrasting};
-        background-color: ${semanticPalette.contrastingHover};
-    }
-
-    ${SearchResultStyled}:hover & {
+    &:hover ${ComparisonButton} {
         opacity: 1;
     }
 `

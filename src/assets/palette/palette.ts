@@ -7,6 +7,8 @@ export const palette = {
     black: 'hsl(213, 13%, 14%)',
     iceBlue: 'hsl(210, 18%, 84%)',
     blue: 'hsl(212, 92%, 45%)',
+    red: 'hsl(356, 71%, 42%)',
+    darkRed: 'hsl(356, 71%, 38%)',
 }
 
 export const semanticPalette = {
@@ -27,4 +29,7 @@ export const semanticPalette = {
     contrasting: palette.green,
     contrastingHover: palette.darkGreen,
     contrasting2: palette.blue,
+
+    error: palette.red,
+    errorHover: palette.darkRed,
 }

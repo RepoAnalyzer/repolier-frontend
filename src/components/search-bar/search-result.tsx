@@ -8,7 +8,7 @@ import { ForksCount } from "components/stats/forks-count";
 import { IssuesCount } from "components/stats/issues-count";
 import { Language } from "components/stats/language";
 
-import { AddToComparisonButton, Dates, Footer, Header, SearchResultStyled, Stats } from "./search-result.style";
+import { ComparisonButton, Dates, Footer, Header, SearchResultStyled, Stats } from "./search-result.style";
 
 export type SearchResultProps = {
     onAddToComparisonClick: (repo: Repo) => void;
@@ -22,11 +22,12 @@ export const SearchResult = (props: SearchResultProps) => {
         <SearchResultStyled>
             <Header>
                 <RepoLink repo={repo} />
-                <AddToComparisonButton
+                <ComparisonButton
+                    preset="add"
                     onClick={() => { props.onAddToComparisonClick(repo) }}
                 >
                     Add to comparison
-                </AddToComparisonButton>
+                </ComparisonButton>
             </Header>
             <main>
                 <span>{repo.description}</span>
@@ -34,7 +35,7 @@ export const SearchResult = (props: SearchResultProps) => {
             <Footer>
                 <Stats>
                     <StarsCount starsCount={repo.stars} />
-                    <Language language={repo.language} />
+                    {repo.language && <Language language={repo.language} />}
                     <ForksCount forksCount={repo.forks} />
                     <IssuesCount issuesCount={repo.open_issues} />
                 </Stats>

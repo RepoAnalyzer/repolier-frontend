@@ -3,7 +3,7 @@ import { Repo, SortBy } from 'components/repos/repos.store';
 export type RepoResponse = {
     name: string;
     description: string;
-    language: string;
+    language: string | null;
     stargazers_count: number;
     forks_count: number;
     open_issues_count: number;
