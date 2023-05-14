@@ -1,12 +1,11 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { palette, semanticPalette } from 'assets/palette/palette';
 import { debounce } from 'lodash';
 import { observer } from 'mobx-react-lite';
-import styled from 'styled-components';
 
 import { Repo, reposStore, SortBy } from 'components/repos/repos.store';
 
+import { Input, Overlay, SearchBarStyled, SearchResultsStyled, Shimmer } from './search-bar.style';
 import { ITEMS_PER_PAGE } from './search-repos.util';
 import { SearchResult } from './search-result';
 
@@ -42,67 +41,6 @@ const getDateDifference = (b: string, a: string) => Number(new Date(b)) - Number
 
 const SEARCH_DEBOUNCE_TIMEOUT = 500;
 
-export type InputProps = {
-    isSearching: boolean;
-}
-
-type SearchBarStyledProps = {
-    isSearching: boolean;
-};
-
-const SearchBarStyled = styled.div<SearchBarStyledProps>`
-    z-index: 1;
-    transform: translateX(-50%);
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 16px;
-    padding: 6px 32px 4px;
-    background-color: ${(props) => props.isSearching ? semanticPalette.primary : 'inherit'};
-`
-
-const Input = styled.input<InputProps>`
-    width: 800px;
-    height: 32px;
-    padding: 2px 8px;
-    font-size: 24px;
-    line-height: 24px;
-    border-radius: 8px;
-    border: 1px solid ${(props) => !props.isSearching ? semanticPalette.vague : semanticPalette.contrasting2};
-    background-color: ${(props) => !props.isSearching ? palette.black : semanticPalette.primary};
-    color: ${(props) => !props.isSearching ? semanticPalette.primary : semanticPalette.informational.primary};
-    outline: none;
-
-    &:focus {
-        border: 2px inset ${semanticPalette.contrasting2};
-        width: 798px;
-        height: 30px;
-    }
-
-    &::placeholder {
-        color: ${(props) => !props.isSearching ? semanticPalette.informational.secondary : semanticPalette.informational.primary};
-    }
-`
-
-export const Overlay = styled.div`
-    top: 0;
-    left: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: hsla(231, 13%, 14%, .4);
-`
-
-export const Shimmer = styled.div`
-    background-color: red;
-`
-
-export const SearchResultsStyled = styled.ol`
-    width: 100%;
-    padding: 0;
-    list-style-type: none;
-`
 export const SearchResults = observer(() => {
     if (reposStore.error) {
         return <span>Whoops! {reposStore.error.message}</span>
