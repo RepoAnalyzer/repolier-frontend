@@ -5,6 +5,7 @@ export const palette = {
     gray: 'hsl(210, 29%, 97%)',
     blueGray: 'hsl(214, 20%, 93%)',
     black: 'hsl(213, 13%, 14%)',
+    iceBlue: 'hsl(210, 18%, 84%)',
     blue: 'hsl(212, 92%, 45%)',
 }
 
@@ -15,6 +16,8 @@ export const semanticPalette = {
     hover: palette.blueGray,
 
     vague: 'hsla(0, 0%, 100%, .4)',
+
+    emphasizing: palette.iceBlue,
 
     informational: {
         primary: palette.black,

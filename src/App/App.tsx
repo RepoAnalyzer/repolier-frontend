@@ -28,6 +28,13 @@ export const Main = styled.main`
 
 `
 
+export const RepoCards = styled.ul`
+    padding: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+`
+
 export const App = observer(() => {
     return (
         <AppStyled>
@@ -35,11 +42,10 @@ export const App = observer(() => {
                 <SearchBar />
             </Header>
             <Main>
-                <hr />
-                <div>
+                <RepoCards>
                     {reposStore.items.length < 1 ? 'Choose a repository' :
                         reposStore.items.map(repo => <RepoCard key={repo.name} repo={repo} />)}
-                </div>
+                </RepoCards>
             </Main>
         </AppStyled>
     );

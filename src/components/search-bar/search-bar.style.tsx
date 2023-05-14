@@ -17,7 +17,7 @@ export const SearchBarStyled = styled.div<SearchBarStyledProps>`
     flex-direction: column;
     align-items: center;
     border-radius: 16px;
-    padding: 6px 32px 4px;
+    padding: 12px 32px 4px;
     background-color: ${(props) => props.isSearching ? semanticPalette.primary : 'inherit'};
 `
 
