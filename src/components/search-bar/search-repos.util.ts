@@ -5,6 +5,8 @@ export type RepoResponse = {
     description: string;
     language: string;
     stargazers_count: number;
+    forks_count: number;
+    open_issues_count: number;
     watchers_count: number;
     score: number;
     owner: { avatar_url: string; login: string };
@@ -32,6 +34,8 @@ export const searchRepos = async (searchTerm: string, sortBy: SortBy): Promise<R
         description: item.description,
         language: item.language,
         stars: item.stargazers_count,
+        forks: item.forks_count,
+        open_issues: item.open_issues_count,
         watchers: item.watchers_count,
         score: item.score,
         avatar: item.owner.avatar_url,

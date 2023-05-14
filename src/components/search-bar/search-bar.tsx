@@ -13,6 +13,8 @@ const sortOptions: { value: SortBy, label: string }[] = [
     { value: 'stars', label: 'Stars' },
     { value: 'watchers', label: 'Watchers Count' },
     { value: 'score', label: 'Score' },
+    { value: 'forks', label: 'Forks Count' },
+    { value: 'open_issues', label: 'Open Issues Count' },
     { value: 'name', label: 'Name' },
     { value: 'created_at', label: 'Created At' },
     { value: 'updated_at', label: 'Updated At' }
@@ -22,18 +24,12 @@ const sortFunction = (sortBy: SortBy) => (a: Repo, b: Repo): number => {
     switch (sortBy) {
         case 'name':
             return a.name.localeCompare(b.name);
-        case 'stars':
-            return b.stars - a.stars;
-        case 'watchers':
-            return b.watchers - a.watchers;
-        case 'score':
-            return b.score - a.score;
         case 'created_at':
-            return getDateDifference(b.created_at, b.created_at);
+            return getDateDifference(b.created_at, a.created_at);
         case 'updated_at':
-            return getDateDifference(b.updated_at, b.updated_at);
+            return getDateDifference(b.updated_at, a.updated_at);
         default:
-            return 0
+            return Number(b[sortBy as keyof Repo]) - Number(a[sortBy as keyof Repo]);
     }
 }
 
