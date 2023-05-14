@@ -1,10 +1,11 @@
 import React from "react";
-import { Repo, reposStore } from 'components/repos/repos.store';
+import { Repo } from 'components/repos/repos.store';
 import { semanticPalette } from 'assets/palette/palette';
 import format from 'date-fns/format'
 import styled from 'styled-components';
 
 export type SearchResultProps = {
+    onAddToComparisonClick: (repo: Repo) => void;
     repo: Repo;
 }
 
@@ -76,10 +77,11 @@ export const SearchResult = (props: SearchResultProps) => {
         <SearchResultStyled>
             <Header>
                 <Link href={repo.url}>{`${repo.owner}/${repo.name}`}</Link>
-                <AddToComparisonButton onClick={() => {
-                    reposStore.addToComparison(repo)
-                    reposStore.searchItems = []
-                }}>Add to comparison</AddToComparisonButton>
+                <AddToComparisonButton
+                    onClick={() => { props.onAddToComparisonClick(repo) }}
+                >
+                    Add to comparison
+                </AddToComparisonButton>
             </Header>
             <main>
                 <span>{repo.description}</span>

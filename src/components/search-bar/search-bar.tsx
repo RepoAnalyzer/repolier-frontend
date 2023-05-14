@@ -7,25 +7,8 @@ import styled from 'styled-components';
 
 import { Repo, reposStore, SortBy } from 'components/repos/repos.store';
 
+import { ITEMS_PER_PAGE } from './search-repos.util';
 import { SearchResult } from './search-result';
-/* import RepoCard from './RepoCard'; */
-
-export type RepoResponse = {
-    name: string;
-    description: string;
-    language: string;
-    stargazers_count: number;
-    watchers_count: number;
-    score: number;
-    owner: { avatar_url: string; login: string };
-    created_at: string;
-    updated_at: string;
-    html_url: string;
-}
-
-export type SearchResponse = {
-    items: Array<RepoResponse>
-}
 
 const sortOptions: { value: SortBy, label: string }[] = [
     { value: 'stars', label: 'Stars' },
@@ -55,27 +38,6 @@ const sortFunction = (sortBy: SortBy) => (a: Repo, b: Repo): number => {
     }
 }
 
-const ITEMS_PER_PAGE = 5;
-
-export const searchRepos = async (searchTerm: string, sortBy: SortBy): Promise<Repo[]> => {
-    const response = await fetch(`https://api.github.com/search/repositories?q=${searchTerm}&per_page=${ITEMS_PER_PAGE}&sort=${sortBy as string}`);
-    const data = await response.json() as SearchResponse;
-
-    return data.items.map((item: RepoResponse) => ({
-        name: item.name,
-        description: item.description,
-        language: item.language,
-        stars: item.stargazers_count,
-        watchers: item.watchers_count,
-        score: item.score,
-        avatar: item.owner.avatar_url,
-        owner: item.owner.login,
-        created_at: item.created_at,
-        updated_at: item.updated_at,
-        url: item.html_url
-    }));
-}
-
 const getDateDifference = (b: string, a: string) => Number(new Date(b)) - Number(new Date(a));
 
 const SEARCH_DEBOUNCE_TIMEOUT = 500;
@@ -89,6 +51,9 @@ type SearchBarStyledProps = {
 };
 
 const SearchBarStyled = styled.div<SearchBarStyledProps>`
+    z-index: 1;
+    transform: translateX(-50%);
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -120,41 +85,67 @@ const Input = styled.input<InputProps>`
     }
 `
 
+export const Overlay = styled.div`
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: hsla(231, 13%, 14%, .4);
+`
+
 export const Shimmer = styled.div`
     background-color: red;
 `
 
 export const SearchResultsStyled = styled.ol`
+    width: 100%;
     padding: 0;
     list-style-type: none;
 `
+export const SearchResults = observer(() => {
+    if (reposStore.error) {
+        return <span>Whoops! {reposStore.error.message}</span>
+    }
 
-export const SearchResults = observer(() =>
-    <SearchResultsStyled>
-        {
-            reposStore.searchItems.length < 1 ? Array(ITEMS_PER_PAGE).fill(undefined).map((_item, key) => <Shimmer key={`shimmer - ${key} `} />) :
-                reposStore.searchItems.slice().sort(sortFunction(reposStore.sortBy)).map(repo => <SearchResult key={repo.name} repo={repo} />)
-        }
-    </SearchResultsStyled>
-)
+    if (reposStore.isFetching) {
+        return (
+            <SearchResultsStyled>
+                {Array(ITEMS_PER_PAGE).fill(undefined).map((_item, key) => <Shimmer key={`shimmer - ${key} `} />)}
+            </SearchResultsStyled>
+        );
+    }
+
+    if (reposStore.nothingFound) {
+        return <span>Nothing found... Try another request</span>
+    }
+
+    return (
+        <SearchResultsStyled>
+            {
+                reposStore.searchItems.slice().sort(sortFunction(reposStore.sortBy)).map(repo => (
+                    <SearchResult
+                        key={repo.name}
+                        repo={repo}
+                        onAddToComparisonClick={(repo) => { reposStore.addToComparison(repo) }}
+                    />)
+                )
+            }
+        </SearchResultsStyled>
+    )
+})
 
 export const SearchBar = observer(() => {
     const [searchTerm, setSearchTerm] = useState('');
 
-    const handleSearch = useCallback((searchTerm: string) => {
-        searchRepos(searchTerm, reposStore.sortBy).then((repos) => {
-            reposStore.searchItems = repos
-        }).catch(console.error)
-    }, []);
-
-    const search = useMemo(() => debounce(handleSearch, SEARCH_DEBOUNCE_TIMEOUT), [handleSearch]);
+    const search = useMemo(() => debounce((searchTerm: string) => reposStore.fetch(searchTerm), SEARCH_DEBOUNCE_TIMEOUT), []);
 
     const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const searchTerm = e.target.value;
 
         setSearchTerm(searchTerm)
 
-        search(searchTerm)
+        void search(searchTerm)
     }, [search]);
 
     const handleSort = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -162,25 +153,38 @@ export const SearchBar = observer(() => {
     }
 
     return (
-        <OutsideClickHandler onOutsideClick={() => { reposStore.isSearching = false }}>
-            < SearchBarStyled isSearching={reposStore.isSearching} >
-                <Input
-                    onFocus={() => { reposStore.isSearching = true }}
-                    type="text"
-                    placeholder="Search..."
-                    isSearching={reposStore.isSearching}
-                    value={searchTerm}
-                    onChange={onInputChange}
-                />
-                <div>
-                    <span><b>Sort by: </b></span>
-                    <select value={reposStore.sortBy as string} onChange={handleSort}>
-                        {sortOptions.map(option => <option key={option.value as string} value={option.value as string}>{option.label}</option>)}
-                    </select>
-                </div>
-                <hr />
-                {reposStore.isSearching && <SearchResults />}
-            </SearchBarStyled >
-        </OutsideClickHandler >
+        <>
+            <OutsideClickHandler onOutsideClick={() => { reposStore.userIsSearching = false }}>
+                <SearchBarStyled isSearching={reposStore.userIsSearching}>
+                    <Input
+                        onFocus={() => { reposStore.userIsSearching = true }}
+                        type="text"
+                        placeholder="Search..."
+                        isSearching={reposStore.userIsSearching}
+                        value={searchTerm}
+                        onChange={onInputChange}
+                    />
+                    {reposStore.userIsSearching && (
+                        <>
+                            <div>
+                                <span><b>Sort by </b></span>
+                                <select value={reposStore.sortBy as string} onChange={handleSort}>
+                                    {sortOptions.map(option => (
+                                        <option
+                                            key={option.value as string}
+                                            value={option.value as string}
+                                        >
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <SearchResults />
+                        </>
+                    )}
+                </SearchBarStyled>
+            </OutsideClickHandler>
+            {reposStore.userIsSearching && <Overlay />}
+        </>
     );
 });
