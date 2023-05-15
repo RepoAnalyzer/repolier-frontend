@@ -49,7 +49,7 @@ export const App = observer(() => {
                                 key={repo.name}
                                 repo={repo}
                                 onRemoveFromComparison={(repo) => reposStore.removeFromComparison(repo)}
-                                onRepoDetailedComparisonCheck={(e) => reposStore.setDetailedComparison(e.target.id, e.target.checked)}
+                                onRepoDetailedComparisonCheck={(e) => reposStore.setDetailedComparison(e.target?.id, e.target.checked)}
                             />
                         ))}
                 </RepoCards>
