@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useMemo } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { debounce } from 'lodash';
 import { observer } from 'mobx-react-lite';
@@ -6,8 +6,9 @@ import { observer } from 'mobx-react-lite';
 import { Repo, reposStore, SortBy } from 'components/repos/repos.store';
 
 import { Input, Overlay, SearchBarStyled, SearchResultsStyled, Shimmer } from './search-bar.style';
-import { ITEMS_PER_PAGE } from './search-repos.util';
+import { ITEMS_PER_PAGE, RequestSortBy } from './search-repos.util';
 import { SearchResult } from './search-result';
+import { runInAction } from 'mobx';
 
 const sortOptions: { value: SortBy, label: string }[] = [
     { value: 'stars', label: 'Stars' },
@@ -20,6 +21,11 @@ const sortOptions: { value: SortBy, label: string }[] = [
     { value: 'updated_at', label: 'Updated At' }
 ];
 
+const requestSortOptions: { value: RequestSortBy, label: string }[] = [
+    { value: 'stars', label: 'Stars' },
+    { value: 'forks', label: 'Forks Count' },
+    { value: 'updated', label: 'Updated At' }
+];
 const sortFunction = (sortBy: SortBy) => (a: Repo, b: Repo): number => {
     switch (sortBy) {
         case 'name':
@@ -38,6 +44,10 @@ const getDateDifference = (b: string, a: string) => Number(new Date(b)) - Number
 const SEARCH_DEBOUNCE_TIMEOUT = 500;
 
 export const SearchResults = observer(() => {
+    if (!reposStore.searchTerm) {
+        return null;
+    }
+
     if (reposStore.error) {
         return <span>Whoops! {reposStore.error.message}</span>
     }
@@ -70,21 +80,25 @@ export const SearchResults = observer(() => {
 })
 
 export const SearchBar = observer(() => {
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const search = useMemo(() => debounce((searchTerm: string) => reposStore.fetch(searchTerm), SEARCH_DEBOUNCE_TIMEOUT), []);
+    const search = useMemo(() => debounce(() => reposStore.fetch(), SEARCH_DEBOUNCE_TIMEOUT), []);
 
     const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        const searchTerm = e.target.value;
+        reposStore.searchTerm = e.target.value;
 
-        setSearchTerm(searchTerm)
-
-        void search(searchTerm)
+        void search()
     }, [search]);
 
-    const handleSort = (event: ChangeEvent<HTMLSelectElement>) => {
+    const handleRequestSort = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+        runInAction(() => {
+            reposStore.requestSortBy = event.target.value as RequestSortBy;
+
+            void search()
+        })
+    }, [search]);
+
+    const handleSort = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
         reposStore.sortBy = event.target.value;
-    }
+    }, []);
 
     return (
         <>
@@ -95,15 +109,15 @@ export const SearchBar = observer(() => {
                         type="text"
                         placeholder="Search..."
                         isSearching={reposStore.userIsSearching}
-                        value={searchTerm}
+                        value={reposStore.searchTerm}
                         onChange={onInputChange}
                     />
                     {reposStore.userIsSearching && (
                         <>
                             <div>
                                 <span><b>Sort by </b></span>
-                                <select value={reposStore.sortBy as string} onChange={handleSort}>
-                                    {sortOptions.map(option => (
+                                <select value={reposStore.requestSortBy as string} onChange={handleRequestSort}>
+                                    {requestSortOptions.map(option => (
                                         <option
                                             key={option.value as string}
                                             value={option.value as string}
@@ -114,6 +128,21 @@ export const SearchBar = observer(() => {
                                 </select>
                             </div>
                             <SearchResults />
+                            {reposStore.searchTerm && reposStore.searchItems.length > 1 && (
+                                <div>
+                                    <span><b>Sort results by </b></span>
+                                    <select value={reposStore.sortBy as string} onChange={handleSort}>
+                                        {sortOptions.map(option => (
+                                            <option
+                                                key={option.value as string}
+                                                value={option.value as string}
+                                            >
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
                         </>
                     )}
                 </SearchBarStyled>

@@ -1,4 +1,4 @@
-import { Repo, SortBy } from 'components/repos/repos.store';
+import { Repo } from 'components/repos/repos.store';
 
 export type RepoResponse = {
     name: string;
@@ -15,17 +15,24 @@ export type RepoResponse = {
     html_url: string;
 }
 
+export type RequestSortBy = 'stars' | 'forks' | 'updated'
+
 export type SearchResponse = {
     items: Array<RepoResponse>
 }
 
 export const ITEMS_PER_PAGE = 5;
 
-export const searchRepos = async (searchTerm: string, sortBy: SortBy): Promise<Repo[]> => {
+export const searchRepos = async (searchTerm: string, sortBy: RequestSortBy): Promise<Repo[]> => {
     if (!searchTerm) {
         return [];
     }
-    const response = await fetch(`https://api.github.com/search/repositories?q=${searchTerm}&per_page=${ITEMS_PER_PAGE}&sort=${sortBy as string}`);
+
+    const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
+
+    const response = await fetch(`https://api.github.com/search/repositories?q=${searchTerm}&per_page=${ITEMS_PER_PAGE}&sort=${sortBy as string}`, {
+        headers: GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : undefined
+    });
 
     const data = await response.json() as SearchResponse;
 

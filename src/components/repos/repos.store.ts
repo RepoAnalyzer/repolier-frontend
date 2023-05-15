@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { searchRepos } from "components/search-bar/search-repos.util";
+import { RequestSortBy, searchRepos } from "components/search-bar/search-repos.util";
 
 export type Repo = {
     name: string;
@@ -21,10 +21,12 @@ export type Repo = {
 export type SortBy = Omit<keyof Repo, 'description' | 'language' | 'avatar' | 'url'>
 
 class ReposStore {
+    _searchTerm = '';
     _userIsSearching = false;
     _isInitialized = false;
     _isFetching = false;
     _error?: Error = undefined;
+    _requestSortBy: RequestSortBy = 'stars';
     _sortBy: SortBy = 'stars';
     _searchItems: Repo[] = [];
 
@@ -45,12 +47,28 @@ class ReposStore {
         makeAutoObservable(this);
     }
 
+    public get searchTerm() {
+        return this._searchTerm;
+    }
+
+    public set searchTerm(searchTerm: string) {
+        this._searchTerm = searchTerm;
+    }
+
     public get userIsSearching() {
         return this._userIsSearching;
     }
 
     public set userIsSearching(isSearching: boolean) {
         this._userIsSearching = isSearching;
+    }
+
+    public get requestSortBy() {
+        return this._requestSortBy;
+    }
+
+    public set requestSortBy(requestSortBy: RequestSortBy) {
+        this._requestSortBy = requestSortBy;
     }
 
     public get sortBy() {
@@ -85,19 +103,25 @@ class ReposStore {
         return this.isInitialized && this.searchItems.length < 1;
     }
 
-    public async fetch(searchTerm: string) {
+    public async fetch() {
+        if (!this.searchTerm) {
+            return;
+        }
+
         try {
             runInAction(() => {
                 this._isFetching = true;
             })
 
-            const result = await searchRepos(searchTerm, this.sortBy)
+            const result = await searchRepos(this.searchTerm, this.requestSortBy)
 
             runInAction(() => {
                 this._isFetching = false;
                 this._isInitialized = true;
                 this.searchItems = result;
             })
+
+            return result;
 
         } catch (error) {
             if (error instanceof Error) {

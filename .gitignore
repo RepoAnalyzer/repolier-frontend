@@ -9,6 +9,8 @@ logs
 **/*.back.*
 build
 
+.env
+
 node_modules
 bower_components
 
