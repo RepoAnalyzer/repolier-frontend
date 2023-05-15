@@ -17,7 +17,7 @@ export const SearchBarStyled = styled.div<SearchBarStyledProps>`
     flex-direction: column;
     align-items: center;
     border-radius: 16px;
-    padding: 12px 32px 4px;
+    padding: 12px 32px 12px;
     background-color: ${(props) => props.isSearching ? semanticPalette.primary : 'inherit'};
 `
 
@@ -48,8 +48,8 @@ export const Overlay = styled.div`
     top: 0;
     left: 0;
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: hsla(231, 13%, 14%, .4);
 `
 
@@ -71,4 +71,8 @@ export const SearchResultsStyled = styled.ol`
     width: 100%;
     padding: 0;
     list-style-type: none;
+`
+
+export const Select = styled.div`
+    margin-top: 16px;
 `

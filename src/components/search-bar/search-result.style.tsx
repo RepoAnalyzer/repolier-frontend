@@ -15,7 +15,7 @@ export const ComparisonButton = styled.button<ComparisonButtonProps>`
             return semanticPalette.contrastingHover;
         }
 
-        return semanticPalette.error;
+        return semanticPalette.errorHover;
     }};
     padding: 8px;
     background-color: ${(props) => {
@@ -38,7 +38,7 @@ export const ComparisonButton = styled.button<ComparisonButtonProps>`
     opacity: 0;
 
     &:hover {
-        border: 1px solid ${semanticPalette.contrasting};
+        border: 1px solid ${semanticPalette.emphasizing};
         color: ${semanticPalette.primary};
         background-color: ${(props) => {
         if (props.preset === 'add') {
