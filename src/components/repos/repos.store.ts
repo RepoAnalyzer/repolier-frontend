@@ -4,7 +4,7 @@ import { RequestSortBy, searchRepos } from "components/search-bar/search-repos.u
 
 export type Repo = {
     name: string;
-    description: string;
+    description: string | null;
     language: string | null;
     stars: number;
     forks: number;

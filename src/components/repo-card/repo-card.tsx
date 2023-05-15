@@ -4,12 +4,13 @@ import styled from 'styled-components';
 
 import { RepoLink } from 'components/repo-link';
 import { Repo } from 'components/repos/repos.store'
+import { ComparisonButton } from 'components/search-bar/search-result.style';
 import { CreatedAt, UpdatedAt } from 'components/stats/dates';
 import { ForksCount } from 'components/stats/forks-count';
+import { IssuesCount } from 'components/stats/issues-count';
 import { Language } from 'components/stats/language';
 import { StarsCount } from 'components/stats/stars-count';
-import { IssuesCount } from 'components/stats/issues-count';
-import { ComparisonButton } from 'components/search-bar/search-result.style';
+import { Description } from 'components/description';
 
 export type RepoCardProps = {
     repo: Repo;
@@ -51,14 +52,6 @@ export const Img = styled.img`
     height: 128px;
 `
 
-export const Description = styled.article`
-    ${BLOCK_BORDER}
-    ${BLOCK_PADDING}
-    margin-top: 24px;
-    display: block;
-    height: 150px;
-`
-
 export const Dates = styled.div`
     display: flex;
     flex-direction: column;
@@ -93,7 +86,13 @@ export const H2 = styled.h2`
     margin: 0;
 `
 
-const MAX_DESCRIPTION_SIZE = 320;
+export const DescriptionStyled = styled(Description)`
+    ${BLOCK_BORDER}
+    ${BLOCK_PADDING}
+    margin-top: 24px;
+    display: block;
+    height: 150px;
+`
 
 export const RepoCard = (props: RepoCardProps) => {
     const { repo } = props;
@@ -104,9 +103,7 @@ export const RepoCard = (props: RepoCardProps) => {
                 <Img src={repo.avatar} />
                 <RepoLink mt="8px" repo={repo} />
             </Header>
-            <Description>
-                {repo.description.length <= MAX_DESCRIPTION_SIZE ? repo.description : `${repo.description.slice(0, MAX_DESCRIPTION_SIZE)}...`}
-            </Description>
+            {repo.description && <DescriptionStyled description={repo.description} />}
 
             <Stats>
                 <div>
