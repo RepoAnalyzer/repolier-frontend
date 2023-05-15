@@ -2,7 +2,7 @@ import React from 'react';
 import format from 'date-fns/format'
 
 export const formatDateAsRuFull = (date: string) =>
-    format(new Date(date), 'dd.mm.yyyy')
+    format(new Date(date), 'dd.MM.yyyy')
 
 export type CreatedAtProps = {
     created_at: string;
