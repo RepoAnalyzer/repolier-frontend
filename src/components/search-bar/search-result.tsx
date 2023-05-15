@@ -2,11 +2,12 @@ import React from "react";
 
 import { RepoLink } from "components/repo-link";
 import { Repo } from 'components/repos/repos.store';
-import { StarsCount } from "components/stats/stars-count";
 import { CreatedAt, UpdatedAt } from "components/stats/dates";
 import { ForksCount } from "components/stats/forks-count";
 import { IssuesCount } from "components/stats/issues-count";
 import { Language } from "components/stats/language";
+import { StarsCount } from "components/stats/stars-count";
+import { Description } from "components/description";
 
 import { ComparisonButton, Dates, Footer, Header, SearchResultStyled, Stats } from "./search-result.style";
 
@@ -29,9 +30,11 @@ export const SearchResult = (props: SearchResultProps) => {
                     Add to comparison
                 </ComparisonButton>
             </Header>
-            <main>
-                <span>{repo.description}</span>
-            </main>
+            {repo.description && (
+                <main>
+                    <Description description={repo.description} />
+                </main>
+            )}
             <Footer>
                 <Stats>
                     <StarsCount starsCount={repo.stars} />
