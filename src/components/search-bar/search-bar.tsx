@@ -1,14 +1,14 @@
 import React, { ChangeEvent, useCallback, useMemo } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { debounce } from 'lodash';
+import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 
 import { Repo, reposStore, SortBy } from 'components/repos/repos.store';
 
-import { Input, Overlay, SearchBarStyled, SearchResultsStyled, Shimmer } from './search-bar.style';
+import { Input, Overlay, SearchBarStyled, SearchResultsStyled, Select, Shimmer } from './search-bar.style';
 import { ITEMS_PER_PAGE, RequestSortBy } from './search-repos.util';
 import { SearchResult } from './search-result';
-import { runInAction } from 'mobx';
 
 const sortOptions: { value: SortBy, label: string }[] = [
     { value: 'stars', label: 'Stars' },
@@ -44,10 +44,6 @@ const getDateDifference = (b: string, a: string) => Number(new Date(b)) - Number
 const SEARCH_DEBOUNCE_TIMEOUT = 500;
 
 export const SearchResults = observer(() => {
-    if (!reposStore.searchTerm) {
-        return null;
-    }
-
     if (reposStore.error) {
         return <span>Whoops! {reposStore.error.message}</span>
     }
@@ -114,7 +110,7 @@ export const SearchBar = observer(() => {
                     />
                     {reposStore.userIsSearching && (
                         <>
-                            <div>
+                            <Select>
                                 <span><b>Sort by </b></span>
                                 <select value={reposStore.requestSortBy as string} onChange={handleRequestSort}>
                                     {requestSortOptions.map(option => (
@@ -126,7 +122,7 @@ export const SearchBar = observer(() => {
                                         </option>
                                     ))}
                                 </select>
-                            </div>
+                            </Select>
                             <SearchResults />
                             {reposStore.searchTerm && reposStore.searchItems.length > 1 && (
                                 <div>
