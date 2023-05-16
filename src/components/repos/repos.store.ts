@@ -1,10 +1,11 @@
 import { Contributor, getContributors } from "api/contributors";
+import { getLanguages, Languages } from "api/languages";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { RequestSortBy, searchRepos } from "components/search-bar/search-repos.util";
+import { getRepoFullName } from "utils/get-repo-full-name";
 
 import { REPOS } from './__mocks__';
-import { getRepoFullName } from "utils/get-repo-full-name";
 
 export type Repo = {
     name: string;
@@ -38,6 +39,7 @@ class ReposStore {
 
     _comparingItems: string[] = [];
     _contributors: Map<string, Contributor[]> = new Map();
+    _languages: Map<string, Languages> = new Map();
 
     constructor() {
         REPOS.forEach((repo) => {
@@ -166,16 +168,22 @@ class ReposStore {
         if (isChecked) {
             this._comparingItems = [...this._comparingItems, repoFullName];
             void this.getContributors(repoFullName);
+            void this.getLanguages(repoFullName);
         } else {
             this.removeFromDetailedComparison(repoFullName);
-            this.removeContributors(repoFullName)
+            this.removeContributors(repoFullName);
+            this.removeLanguages(repoFullName);
         }
     }
 
-    // public getComparingItemsInfo() {
-    //     return this._comparingItems.map((repoFullName) => {
-    //     })
-    // }
+
+    public get contributors() {
+        return Array.from(this._contributors.values());
+    }
+
+    public get contributorsMap() {
+        return this._contributors;
+    }
 
     public async getContributorsFromApi(repoFullName: string) {
         const repo = this.itemsMap.get(repoFullName);
@@ -184,9 +192,9 @@ class ReposStore {
             throw new TypeError(`Requested to get contributors for inexisting repo by name: ${repoFullName}`);
         }
 
-        const contributors = await getContributors(repo.owner, repo.name)
+        const contributors = await getContributors(repo.owner, repo.name);
 
-        this._contributors.set(repoFullName, contributors)
+        this._contributors.set(repoFullName, contributors);
     }
 
     public async getContributors(repoFullName: string) {
@@ -203,12 +211,24 @@ class ReposStore {
         this._contributors.delete(repoFullName);
     }
 
-    public get contributors() {
-        return Array.from(this._contributors.values());
+    public get languagesMap() {
+        return this._languages;
     }
 
-    public get contributorsMap() {
-        return this._contributors;
+    public async getLanguages(repoFullName: string) {
+        const repo = this.itemsMap.get(repoFullName);
+
+        if (!repo) {
+            throw new TypeError(`Requested to get languages for inexisting repo by name: ${repoFullName}`);
+        }
+
+        const languages = await getLanguages(repo.owner, repo.name);
+
+        this._languages.set(repoFullName, languages)
+    }
+
+    public removeLanguages(repoFullName: string) {
+        this._languages.delete(repoFullName);
     }
 }
 

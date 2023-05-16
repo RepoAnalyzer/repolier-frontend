@@ -15,8 +15,6 @@ export type ContributorResponse = {
 export type GetContributorsResponse = ContributorResponse[];
 
 
-export const ITEMS_PER_PAGE = 5;
-
 export const getContributors = async (ownerName: string, repoName: string): Promise<Contributor[]> => {
     const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
