@@ -164,24 +164,51 @@ class ReposStore {
 
     public setDetailedComparison(repoFullName: string, isChecked: boolean) {
         if (isChecked) {
-            this._comparingItems.push(repoFullName);
+            this._comparingItems = [...this._comparingItems, repoFullName];
+            void this.getContributors(repoFullName);
         } else {
             this.removeFromDetailedComparison(repoFullName);
+            this.removeContributors(repoFullName)
         }
     }
 
-    public getComparingItemsInfo() {
-        return this._comparingItems.map((repoFullName) => {
-            const repo = this.itemsMap.get(repoFullName);
+    // public getComparingItemsInfo() {
+    //     return this._comparingItems.map((repoFullName) => {
+    //     })
+    // }
 
-            if (!repo) {
-                throw new TypeError(`Requested to compare inexisting repo by name: ${repoFullName}`);
-            }
+    public async getContributorsFromApi(repoFullName: string) {
+        const repo = this.itemsMap.get(repoFullName);
 
-            return getContributors(repo.owner, repo.name).then((response) => {
-                this._contributors.set(repoFullName, response)
-            }).catch(console.error);
-        })
+        if (!repo) {
+            throw new TypeError(`Requested to get contributors for inexisting repo by name: ${repoFullName}`);
+        }
+
+        const contributors = await getContributors(repo.owner, repo.name)
+
+        this._contributors.set(repoFullName, contributors)
+    }
+
+    public async getContributors(repoFullName: string) {
+        const contributors = this._contributors.get(repoFullName);
+
+        if (contributors) {
+            return contributors;
+        }
+
+        return this.getContributorsFromApi(repoFullName);
+    }
+
+    public removeContributors(repoFullName: string) {
+        this._contributors.delete(repoFullName);
+    }
+
+    public get contributors() {
+        return Array.from(this._contributors.values());
+    }
+
+    public get contributorsMap() {
+        return this._contributors;
     }
 }
 
