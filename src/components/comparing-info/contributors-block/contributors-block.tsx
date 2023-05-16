@@ -22,7 +22,7 @@ export const ContributorsBlock = observer(() => {
 
     return (
         <ComparingInfoStyled>
-            {reposStore.comparingItems.length > 0 && (<h1>Contributions</h1>)}
+            {reposStore.comparingItems.length > 0 && (<h2>Contributions</h2>)}
             {contributors.size > 0 && Array.from(contributors.entries()).map(([repoFullName, contributorsForRepo]) => {
                 const repo = reposStore.itemsMap.get(repoFullName);
 

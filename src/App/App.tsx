@@ -30,6 +30,7 @@ export type HeaderStyledProps = {
 //   padding-top should be no lower then THIN_HEADER_HEIGHT otherwise it overlaps with
 // input content no matter the z-index.
 export const HeaderStyled = styled.header<HeaderStyledProps>`
+    z-index: 2;
     position: ${(props) => props.isVisible ? 'fixed' : 'absolute'};
     width: 100%;
     height: ${HEADER_HEIGHT};
@@ -42,6 +43,7 @@ export const HeaderStyled = styled.header<HeaderStyledProps>`
 `
 
 export const HeaderThin = styled.div`
+    z-index: 2;
     top: 0;
     position: sticky;
     width: 100%;
