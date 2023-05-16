@@ -105,6 +105,7 @@ export const Header = (props: HeaderProps) => {
 }
 
 export const Main = styled.main`
+    padding: 16px 32px;
     margin-top: ${HEADER_HEIGHT};
 `
 

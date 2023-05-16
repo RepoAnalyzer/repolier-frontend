@@ -1,10 +1,13 @@
-import { reposStore } from "components/repos/repos.store";
-import { observer } from "mobx-react-lite";
 import React from "react";
+import styled from "styled-components";
 
-export const ComparingInfo = observer(() => {
-    const contributors = reposStore.comparingItems;
+import { ContributorsBlock } from "./contributors-block/contributors-block";
 
-    return <div>{JSON.stringify(contributors)}</div>;
-});
+export const ComparingInfoStyled = styled.article`
+    text-align: center;
+`
+
+export const ComparingInfo = () => {
+    return <ComparingInfoStyled><ContributorsBlock /></ComparingInfoStyled>
+}
 

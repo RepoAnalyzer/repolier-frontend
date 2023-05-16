@@ -1,10 +1,12 @@
 export type Contributor = {
+    id: number;
     name: string;
     contributions: number;
     avatar: string;
 }
 
 export type ContributorResponse = {
+    id: number;
     login: string;
     contributions: number;
     avatar_url: string;
@@ -25,8 +27,8 @@ export const getContributors = async (ownerName: string, repoName: string): Prom
     const data = await response.json() as GetContributorsResponse;
 
     return data.map((item: ContributorResponse) => ({
+        ...item,
         name: item.login,
-        contributions: item.contributions,
         avatar: item.avatar_url,
     }));
 }
