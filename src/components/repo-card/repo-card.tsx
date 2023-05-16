@@ -1,7 +1,8 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, memo } from 'react';
 import { semanticPalette } from 'assets/palette/palette';
 import styled from 'styled-components';
 
+import { Description } from 'components/description';
 import { RepoLink } from 'components/repo-link';
 import { Repo } from 'components/repos/repos.store'
 import { ComparisonButton } from 'components/search-bar/search-result.style';
@@ -10,7 +11,7 @@ import { ForksCount } from 'components/stats/forks-count';
 import { IssuesCount } from 'components/stats/issues-count';
 import { Language } from 'components/stats/language';
 import { StarsCount } from 'components/stats/stars-count';
-import { Description } from 'components/description';
+import { getRepoFullName } from 'utils/get-repo-full-name';
 
 export type RepoCardProps = {
     repo: Repo;
@@ -94,7 +95,7 @@ export const DescriptionStyled = styled(Description)`
     height: 150px;
 `
 
-export const RepoCard = (props: RepoCardProps) => {
+export const RepoCard = memo((props: RepoCardProps) => {
     const { repo } = props;
 
     return (
@@ -119,8 +120,8 @@ export const RepoCard = (props: RepoCardProps) => {
             </Stats>
             <Footer>
                 <div>
-                    <input type="checkbox" id={repo.name} name={repo.name} onChange={props.onRepoDetailedComparisonCheck} />
-                    <label htmlFor={repo.name}>Compare</label>
+                    <input type="checkbox" id={getRepoFullName(repo)} name={getRepoFullName(repo)} onChange={props.onRepoDetailedComparisonCheck} />
+                    <label htmlFor={getRepoFullName(repo)}>Compare</label>
                 </div>
                 <Score>
                     Score:
@@ -135,5 +136,5 @@ export const RepoCard = (props: RepoCardProps) => {
             </Footer>
         </RepoCardStyled>
     );
-}
+})
 
