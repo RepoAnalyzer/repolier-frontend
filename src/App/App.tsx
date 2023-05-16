@@ -9,6 +9,7 @@ import { SearchBar } from 'components/search-bar/search-bar';
 import { BiUpArrow } from 'react-icons/bi';
 import { GiPlantRoots } from 'react-icons/gi';
 import { GoPin } from 'react-icons/go'
+import { ComparingInfo } from 'components/comparing-info/comparing-info';
 
 export const Button = styled.button`
     color: ${semanticPalette.contrasting};
@@ -146,6 +147,7 @@ const Greeting = () => {
         </div>
     );
 }
+
 export const App = observer(() => {
     return (
         <AppStyled>
@@ -164,6 +166,7 @@ export const App = observer(() => {
                             />
                         ))}
                 </RepoCards>
+                <ComparingInfo />
             </Main>
         </AppStyled >
     );

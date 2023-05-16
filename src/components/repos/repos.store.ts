@@ -1,6 +1,10 @@
+import { Contributor, getContributors } from "api/contributors";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { RequestSortBy, searchRepos } from "components/search-bar/search-repos.util";
+
+import { REPOS } from './__mocks__';
+import { getRepoFullName } from "utils/get-repo-full-name";
 
 export type Repo = {
     name: string;
@@ -32,9 +36,13 @@ class ReposStore {
 
     itemsMap: Map<string, Repo> = new Map();
 
-    comparingItems: string[] = [];
+    _comparingItems: string[] = [];
+    _contributors: Map<string, Contributor[]> = new Map();
 
     constructor() {
+        REPOS.forEach((repo) => {
+            this.itemsMap.set(getRepoFullName(repo), repo);
+        })
         makeAutoObservable(this);
     }
 
@@ -131,21 +139,49 @@ class ReposStore {
         return Array.from(this.itemsMap, ([, value]) => value);
     }
 
+    public get comparingItems() {
+        return this._comparingItems;
+    }
+
     public addToComparison(repo: Repo) {
         this.userIsSearching = false;
-        this.itemsMap.set(repo.name, repo)
+        this.itemsMap.set(getRepoFullName(repo), repo)
     }
 
     public removeFromComparison(repo: Repo) {
-        this.itemsMap.delete(repo.name)
+        const repoFullName = getRepoFullName(repo);
+
+        this.itemsMap.delete(repoFullName);
+
+        this.removeFromDetailedComparison(repoFullName);
     }
 
-    public setDetailedComparison(repoName: string, isChecked: boolean) {
+    public removeFromDetailedComparison(repoFullName: string) {
+        const repoIndex = this._comparingItems.findIndex((name) => name === repoFullName);
+
+        this._comparingItems = [...this._comparingItems.slice(0, repoIndex), ...this._comparingItems.slice(repoIndex + 1)];
+    }
+
+    public setDetailedComparison(repoFullName: string, isChecked: boolean) {
         if (isChecked) {
-            this.comparingItems.push(repoName)
+            this._comparingItems.push(repoFullName);
         } else {
-            this.comparingItems = this.comparingItems.splice(this.comparingItems.findIndex((name) => name === repoName), 1);
+            this.removeFromDetailedComparison(repoFullName);
         }
+    }
+
+    public getComparingItemsInfo() {
+        return this._comparingItems.map((repoFullName) => {
+            const repo = this.itemsMap.get(repoFullName);
+
+            if (!repo) {
+                throw new TypeError(`Requested to compare inexisting repo by name: ${repoFullName}`);
+            }
+
+            return getContributors(repo.owner, repo.name).then((response) => {
+                this._contributors.set(repoFullName, response)
+            }).catch(console.error);
+        })
     }
 }
 
