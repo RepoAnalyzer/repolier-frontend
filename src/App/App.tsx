@@ -10,6 +10,7 @@ import { BiUpArrow } from 'react-icons/bi';
 import { GiPlantRoots } from 'react-icons/gi';
 import { GoPin } from 'react-icons/go'
 import { ComparingInfo } from 'components/comparing-info/comparing-info';
+import { getRepoFullName } from 'utils/get-repo-full-name';
 
 export const Button = styled.button`
     color: ${semanticPalette.contrasting};
@@ -164,6 +165,7 @@ export const App = observer(() => {
                             <RepoCard
                                 key={repo.name}
                                 repo={repo}
+                                score={reposStore.getRepoScore(getRepoFullName(repo))}
                                 onRemoveFromComparison={(repo) => reposStore.removeFromComparison(repo)}
                                 onRepoDetailedComparisonCheck={(e) => reposStore.setDetailedComparison(e.target?.id, e.target.checked)}
                             />

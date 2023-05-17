@@ -1,8 +1,10 @@
 import React from 'react';
+import { keys } from 'lodash';
 import { observer } from 'mobx-react-lite';
-import { reposStore } from 'components/repos/repos.store';
 import styled from 'styled-components';
+
 import { RepoLink } from 'components/repo-link';
+import { reposStore } from 'components/repos/repos.store';
 
 import { LanguagesPie } from './languages-pie';
 
@@ -34,7 +36,7 @@ export const LanguagesBlock = observer(() => {
                         return (
                             <div key={repoFullName}>
                                 {repo && <RepoLink repo={repo} />}
-                                <LanguagesPie repoLanguages={repoLanguages} />
+                                {keys(repoLanguages).length < 1 ? <p>No stats</p> : <LanguagesPie repoLanguages={repoLanguages} />}
                             </div>
                         );
                     })

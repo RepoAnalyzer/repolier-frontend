@@ -5,6 +5,7 @@ import { RepoLink } from 'components/repo-link';
 
 import { reposStore } from "components/repos/repos.store";
 import { ContributorsBar, ContributorsBarStyled } from "./contributors-bar";
+import { toJS } from "mobx";
 
 export const ComparingInfoStyled = styled.div`
     & ${ContributorsBarStyled} {
@@ -20,6 +21,9 @@ export const Contributors = styled.div`
 export const ContributorsBlock = observer(() => {
     const contributors = reposStore.contributorsMap;
 
+    console.log(toJS(contributors))
+    console.log(toJS(reposStore.contributors))
+
     return (
         <ComparingInfoStyled>
             {reposStore.comparingItems.length > 0 && (<h2>Contributions</h2>)}
@@ -29,7 +33,7 @@ export const ContributorsBlock = observer(() => {
                 return (
                     <Contributors key={repoFullName}>
                         {repo && <span>Contributions for <RepoLink repo={repo} /></span>}
-                        <ContributorsBar contributorsForRepo={contributorsForRepo} />
+                        {contributorsForRepo.length < 1 ? <p>No stats</p> : <ContributorsBar contributorsForRepo={contributorsForRepo} />}
                     </Contributors>
                 );
             })}

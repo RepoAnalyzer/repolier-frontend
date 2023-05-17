@@ -15,6 +15,7 @@ import { getRepoFullName } from 'utils/get-repo-full-name';
 
 export type RepoCardProps = {
     repo: Repo;
+    score: number;
     onRemoveFromComparison: (repo: Repo) => void;
     onRepoDetailedComparisonCheck: (e: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -84,7 +85,7 @@ export const Score = styled.span`
 `
 
 export const H2 = styled.h2`
-    margin: 0;
+    margin: 0 0 0 12px;
 `
 
 export const DescriptionStyled = styled(Description)`
@@ -104,7 +105,7 @@ export const RepoCard = memo((props: RepoCardProps) => {
                 <Img src={repo.avatar} />
                 <RepoLink mt="8px" repo={repo} />
             </Header>
-            {repo.description && <DescriptionStyled description={repo.description} />}
+            <DescriptionStyled description={repo.description || ''} />
 
             <Stats>
                 <div>
@@ -125,7 +126,7 @@ export const RepoCard = memo((props: RepoCardProps) => {
                 </div>
                 <Score>
                     Score:
-                    <H2>{repo.score * 100}</H2>
+                    <H2>{(props.score * 100).toFixed(2)}</H2>
                 </Score>
                 <ComparisonButton
                     preset="remove"
