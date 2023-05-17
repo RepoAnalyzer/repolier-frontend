@@ -5,7 +5,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { RequestSortBy, searchRepos } from "components/search-bar/search-repos.util";
 import { getRepoFullName } from "utils/get-repo-full-name";
 
-import { REPOS } from './__mocks__';
+// import { REPOS } from './__mocks__';
 
 export type Repo = {
     name: string;
@@ -66,9 +66,9 @@ class ReposStore {
     _languages: Map<string, Languages> = new Map();
 
     constructor() {
-        REPOS.forEach((repo) => {
-            this.itemsMap.set(getRepoFullName(repo), repo);
-        })
+        // REPOS.forEach((repo) => {
+        //     this.itemsMap.set(getRepoFullName(repo), repo);
+        // })
         makeAutoObservable(this);
     }
 
