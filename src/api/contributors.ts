@@ -12,7 +12,7 @@ export type ContributorResponse = {
     avatar_url: string;
 }
 
-export type GetContributorsResponse = ContributorResponse[];
+export type GetContributorsResponse = ContributorResponse[] | undefined;
 
 
 export const getContributors = async (ownerName: string, repoName: string): Promise<Contributor[]> => {
@@ -24,7 +24,7 @@ export const getContributors = async (ownerName: string, repoName: string): Prom
 
     const data = await response.json() as GetContributorsResponse;
 
-    return data.map((item: ContributorResponse) => ({
+    return !data ? [] : data.map((item: ContributorResponse) => ({
         ...item,
         name: item.login,
         avatar: item.avatar_url,
