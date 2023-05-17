@@ -5,7 +5,6 @@ import { RepoLink } from 'components/repo-link';
 
 import { reposStore } from "components/repos/repos.store";
 import { ContributorsBar, ContributorsBarStyled } from "./contributors-bar";
-import { toJS } from "mobx";
 
 export const ComparingInfoStyled = styled.div`
     & ${ContributorsBarStyled} {
@@ -20,9 +19,6 @@ export const Contributors = styled.div`
 // TODO: Add shimmer.
 export const ContributorsBlock = observer(() => {
     const contributors = reposStore.contributorsMap;
-
-    console.log(toJS(contributors))
-    console.log(toJS(reposStore.contributors))
 
     return (
         <ComparingInfoStyled>
