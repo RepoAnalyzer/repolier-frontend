@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { Repo, SortBy } from 'components/repos/repos.types';
 import { reposStore } from 'components/repos/repos.store';
 
-import { ITEMS_PER_PAGE } from './search-repos.util';
+import { ITEMS_PER_PAGE } from '../repos/repo.mapper';
 import { SearchResultsStyled, Shimmer } from './search-bar.style';
 
 import { SearchResult } from './search-result';

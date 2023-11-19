@@ -1,10 +1,15 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { searchRepos, RequestSortBy } from "components/search-bar/search-repos.util";
+import { repoMapper, RequestSortBy } from "components/repos/repo.mapper";
 
 import { Repo } from "./repos.types";
 
-export class ReposMapper {
+interface TransactionScript {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    run: (...args: any[]) => void
+}
+
+export class SearchTS implements TransactionScript {
     _searchItems: Repo[] = [];
     _isFetching = false;
     _isInitialized = false;
@@ -14,7 +19,7 @@ export class ReposMapper {
         makeAutoObservable(this)
     }
 
-    public async read(searchTerm: string, requestSortBy: RequestSortBy) {
+    public async run(searchTerm: string, requestSortBy: RequestSortBy) {
         if (!searchTerm) {
             runInAction(() => {
                 this._searchItems = []
@@ -28,7 +33,7 @@ export class ReposMapper {
                 this._isFetching = true;
             })
 
-            const result = await searchRepos(searchTerm, requestSortBy)
+            const result = await repoMapper.read(searchTerm, requestSortBy)
 
             runInAction(() => {
                 this._isFetching = false;
@@ -48,4 +53,4 @@ export class ReposMapper {
     }
 }
 
-export const reposMapper = new ReposMapper()
+export const searchTS = new SearchTS()
