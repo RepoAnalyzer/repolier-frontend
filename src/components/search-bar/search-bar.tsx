@@ -1,33 +1,15 @@
 import React, { ChangeEvent, useCallback, useEffect, useMemo } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { debounce } from 'lodash';
-import { makeAutoObservable, runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 
 import { reposStore } from 'components/repos/repos.store';
-import { reposMapper } from 'components/repos/repos.mapper';
+import { searchTS } from 'components/repos/search-ts';
+import { RequestSortBy } from 'components/repos/repo.mapper';
 
 import { Input, Overlay, SearchBarStyled, Select } from './search-bar.style';
-import { RequestSortBy } from './search-repos.util';
 import { SEARCH_DEBOUNCE_TIMEOUT, requestSortOptions, sortOptions } from './search-bar.constants';
 import { SearchResults } from './search-results';
-
-interface TransactionScript {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    run: (...args: any[]) => void
-}
-
-class SearchTS implements TransactionScript {
-    constructor() {
-        makeAutoObservable(this)
-    }
-
-    run(searchTerm: string, searchParam: RequestSortBy) {
-        void reposMapper.read(searchTerm, searchParam);
-    }
-}
-
-const searchTS = new SearchTS()
 
 export const SearchBar = observer(() => {
     const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -39,9 +21,7 @@ export const SearchBar = observer(() => {
     }, []);
 
     const handleRequestSort = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-        runInAction(() => {
-            reposStore.requestSortBy = event.target.value as RequestSortBy;
-        })
+        reposStore.requestSortBy = event.target.value as RequestSortBy;
     }, []);
 
     const search = useMemo(() => debounce(() =>

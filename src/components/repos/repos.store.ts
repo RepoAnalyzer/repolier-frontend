@@ -2,11 +2,11 @@ import { Contributor, getContributors } from "api/contributors";
 import { getLanguages, Languages } from "api/languages";
 import { makeAutoObservable } from "mobx";
 
-import { RequestSortBy } from "components/search-bar/search-repos.util";
+import { RequestSortBy } from "components/repos/repo.mapper";
 import { getRepoFullName } from "utils/get-repo-full-name";
 
 import { Repo, SortBy } from "./repos.types";
-import { reposMapper } from "./repos.mapper";
+import { searchTS } from "./search-ts";
 
 // import { REPOS } from './__mocks__';
 
@@ -90,7 +90,7 @@ class ReposStore {
     }
 
     public get searchItems() {
-        return reposMapper._searchItems;
+        return searchTS._searchItems;
     }
 
     // public set searchItems(repos: Repo[]) {
@@ -98,15 +98,15 @@ class ReposStore {
     // }
 
     public get isInitialized() {
-        return reposMapper._isInitialized;
+        return searchTS._isInitialized;
     }
 
     public get isFetching() {
-        return reposMapper._isFetching;
+        return searchTS._isFetching;
     }
 
     public get error() {
-        return reposMapper._error;
+        return searchTS._error;
     }
 
     public get nothingFound() {

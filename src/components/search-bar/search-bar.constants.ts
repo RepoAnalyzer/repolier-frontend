@@ -1,6 +1,6 @@
 import { SortBy } from 'components/repos/repos.types';
 
-import { RequestSortBy } from './search-repos.util';
+import { RequestSortBy } from 'components/repos/repo.mapper';
 
 export const sortOptions: { value: SortBy, label: string }[] = [
     { value: 'stars', label: 'Stars' },
