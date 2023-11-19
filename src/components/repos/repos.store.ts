@@ -1,29 +1,14 @@
 import { Contributor, getContributors } from "api/contributors";
 import { getLanguages, Languages } from "api/languages";
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 
-import { RequestSortBy, searchRepos } from "components/search-bar/search-repos.util";
+import { RequestSortBy } from "components/search-bar/search-repos.util";
 import { getRepoFullName } from "utils/get-repo-full-name";
 
+import { Repo, SortBy } from "./repos.types";
+import { reposMapper } from "./repos.mapper";
+
 // import { REPOS } from './__mocks__';
-
-export type Repo = {
-    name: string;
-    description: string | null;
-    language: string | null;
-    stars: number;
-    forks: number;
-    open_issues: number;
-    watchers: number;
-    score: number;
-    avatar: string;
-    owner: string;
-    created_at: string;
-    updated_at: string;
-    url: string;
-};
-
-export type SortBy = Omit<keyof Repo, 'description' | 'language' | 'avatar' | 'url'>
 
 const MOST_STARS = 366721;
 // const MOST_FORKS = 242860;
@@ -105,60 +90,27 @@ class ReposStore {
     }
 
     public get searchItems() {
-        return this._searchItems;
+        return reposMapper._searchItems;
     }
 
-    public set searchItems(repos: Repo[]) {
-        this._searchItems = repos;
-    }
+    // public set searchItems(repos: Repo[]) {
+    //     this._searchItems = repos;
+    // }
 
     public get isInitialized() {
-        return this._isInitialized;
+        return reposMapper._isInitialized;
     }
 
     public get isFetching() {
-        return this._isFetching;
+        return reposMapper._isFetching;
     }
 
     public get error() {
-        return this._error;
+        return reposMapper._error;
     }
 
     public get nothingFound() {
         return this.isInitialized && this.searchItems.length < 1;
-    }
-
-    public async fetch() {
-        if (!this.searchTerm) {
-            runInAction(() => {
-                this.searchItems = []
-            })
-
-            return;
-        }
-
-        try {
-            runInAction(() => {
-                this._isFetching = true;
-            })
-
-            const result = await searchRepos(this.searchTerm, this.requestSortBy)
-
-            runInAction(() => {
-                this._isFetching = false;
-                this._isInitialized = true;
-                this.searchItems = result;
-            })
-
-            return result;
-
-        } catch (error) {
-            if (error instanceof Error) {
-                runInAction(() => {
-                    this._error = error as Error;
-                })
-            }
-        }
     }
 
     public get items() {
