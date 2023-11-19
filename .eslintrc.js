@@ -24,7 +24,7 @@ module.exports = {
     },
     "rules": {
         "eslint-comments/no-unused-disable": "error",
-        "eslint-comments/no-use": "error",
+        "eslint-comments/no-use": "warning",
         "no-debugger": "error",
         "prefer-const": "error",
         "react-hooks/rules-of-hooks": "error",

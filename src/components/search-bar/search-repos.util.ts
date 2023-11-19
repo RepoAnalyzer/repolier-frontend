@@ -1,4 +1,4 @@
-import { Repo } from 'components/repos/repos.store';
+import { Repo } from 'components/repos/repos.types';
 
 export type RepoResponse = {
     name: string;

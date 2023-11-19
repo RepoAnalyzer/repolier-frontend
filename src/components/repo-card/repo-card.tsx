@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Description } from 'components/description';
 import { RepoLink } from 'components/repo-link';
-import { Repo } from 'components/repos/repos.store'
+import { Repo } from 'components/repos/repos.types'
 import { ComparisonButton } from 'components/search-bar/search-result.style';
 import { CreatedAt, UpdatedAt } from 'components/stats/dates';
 import { ForksCount } from 'components/stats/forks-count';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repo } from 'components/repos/repos.store';
+import { Repo } from 'components/repos/repos.types';
 import { Link } from './repo-link.styles';
 import { MarginProps } from 'styled-system';
 
