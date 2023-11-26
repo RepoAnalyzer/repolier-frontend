@@ -11,7 +11,7 @@ import { Repo, SortBy } from './repos.types';
 
 export type LanguagesMap = Map<string, number>;
 
-class ReposStore {
+class ReposMediator {
     _searchTerm = '';
     _userIsSearching = false;
     _isInitialized = false;
@@ -19,7 +19,6 @@ class ReposStore {
     _error?: Error = undefined;
     _requestSortBy: RequestSortBy = 'stars';
     _sortBy: SortBy = 'stars';
-    _searchItems: Repo[] = [];
 
     public itemsMap: Map<string, Repo> = new Map();
 
@@ -153,4 +152,4 @@ class ReposStore {
     }
 }
 
-export const reposStore = new ReposStore();
+export const reposMediator = new ReposMediator();

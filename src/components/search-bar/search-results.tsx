@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { ITEMS_PER_PAGE } from 'components/repos/repo.mapper';
-import { reposStore } from 'components/repos/repos.store';
+import { reposMediator } from 'components/repos/repos.mediator';
 import { Repo, SortBy } from 'components/repos/repos.types';
 
 import { SearchResultsStyled, Shimmer } from './search-bar.style';
@@ -26,11 +26,11 @@ const sortFunction =
 const getDateDifference = (b: string, a: string) => Number(new Date(b)) - Number(new Date(a));
 
 export const SearchResults = observer(() => {
-    if (reposStore.error) {
-        return <span>Whoops! {reposStore.error.message}</span>;
+    if (reposMediator.error) {
+        return <span>Whoops! {reposMediator.error.message}</span>;
     }
 
-    if (reposStore.isFetching) {
+    if (reposMediator.isFetching) {
         return (
             <SearchResultsStyled>
                 {Array(ITEMS_PER_PAGE)
@@ -42,21 +42,21 @@ export const SearchResults = observer(() => {
         );
     }
 
-    if (reposStore.nothingFound) {
+    if (reposMediator.nothingFound) {
         return <span>Nothing found... Try another request</span>;
     }
 
     return (
         <SearchResultsStyled>
-            {reposStore.searchItems
+            {reposMediator.searchItems
                 .slice()
-                .sort(sortFunction(reposStore.sortBy))
+                .sort(sortFunction(reposMediator.sortBy))
                 .map((repo) => (
                     <SearchResult
                         key={`${repo.owner}/${repo.name}`}
                         repo={repo}
                         onAddToComparisonClick={(repo) => {
-                            reposStore.addToComparison(repo);
+                            reposMediator.addToComparison(repo);
                         }}
                     />
                 ))}

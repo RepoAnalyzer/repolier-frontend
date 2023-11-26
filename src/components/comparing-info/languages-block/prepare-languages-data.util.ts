@@ -1,6 +1,6 @@
 import { values } from 'lodash';
 
-import { LanguagesMap } from 'components/repos/repos.store';
+import { LanguagesMap } from 'components/repos/repos.mediator';
 
 export const prepareLanguagesData = (repoLanguages: LanguagesMap, languagePercentMinValue: number) => {
     const totalValue = Array.from(repoLanguages.values()).reduce((acc, count) => acc + count, 0);

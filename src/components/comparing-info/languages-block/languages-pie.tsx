@@ -2,7 +2,7 @@ import React from 'react';
 import { ResponsivePie } from '@nivo/pie';
 import { styled } from 'styled-components';
 
-import { LanguagesMap } from 'components/repos/repos.store';
+import { LanguagesMap } from 'components/repos/repos.mediator';
 
 import { prepareLanguagesData } from './prepare-languages-data.util';
 
