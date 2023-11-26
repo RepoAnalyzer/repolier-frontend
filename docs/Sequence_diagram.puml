@@ -1,0 +1,54 @@
+@startuml
+autonumber
+' Search
+participant Пользователь as U
+
+loop пользователь набирает запрос / выбирает параметры
+    U --> ReposStore: ReposStore.searchTerm
+    activate ReposStore
+    U --> ReposStore: ReposStore.sortBy
+    ReposStore --> SearchTS: SearchTS.run
+    activate SearchTS
+    ReposStore <-- SearchTS: SearchTS.isFetching = true
+    U <-- ReposStore: ReposStore.isFetching = true
+end
+
+SearchTS --> RepoMapper: RepoMapper.read
+activate RepoMapper
+RepoMapper --> Database: read
+activate Database
+
+alt успешно
+    RepoMapper <-- Database: RepoResponse[]
+    SearchTS <-- RepoMapper: Repo[]
+    ReposStore <-- SearchTS: Repo[]
+    ReposStore <-- SearchTS: isFetching = false
+    ReposStore <-- SearchTS: isInitialized = true
+    alt данные по запросу есть
+        U <-- ReposStore: RepoStore.items
+
+        U --> ReposStore : ReposStore.requestSortBy
+        U <-- ReposStore : ReposStore.items
+    else данных нет
+        U <-- ReposStore: RepoStore.nothingFound
+    end
+else ошибка
+    RepoMapper <-- Database: Error
+    deactivate Database
+    SearchTS <-- RepoMapper: Error
+    deactivate RepoMapper
+    ReposStore <-- SearchTS: SearchTS.error
+    ReposStore <-- SearchTS: isFetching = false
+    alt предвиденная ошибка
+        ReposStore <-- SearchTS: isInitialized = true
+    else непредвиденная ошибка
+        ReposStore <-- SearchTS: isInitialized = false
+    end
+
+    deactivate SearchTS
+    U <-- ReposStore: ReposStore.error
+end
+
+deactivate ReposStore
+
+@enduml
