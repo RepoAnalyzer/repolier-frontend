@@ -20,13 +20,13 @@ export const Contributors = styled.div`
 // TODO: Add shimmer.
 export const ContributorsBlock = observer(() => {
     const contributors = reposStore.services.contributors.itemMap;
+    console.log({ comparingItems: reposStore.comparingItems })
 
     return (
         <ComparingInfoStyled>
             {reposStore.comparingItems.length > 0 && <h2>Contributions</h2>}
             {contributors.size > 0 &&
                 Array.from(contributors.entries()).map(([repoFullName, contributorsForRepo]) => {
-                    console.log(contributorsForRepo)
                     const repo = reposStore.itemsMap.get(repoFullName);
 
                     return (
