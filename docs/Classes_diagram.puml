@@ -1,0 +1,83 @@
+@startuml
+    ' Don't show icons near class names.
+    hide circle
+    ' Show attribute visibility as text (+, ~, #, -), not as icons.
+    skinparam classAttributeIconSize 0
+
+    interface TransactionScript {
+        +run(args)
+    }
+
+    ' class SetSearchParamTS {
+    '     +defaultSearchParam: string
+
+    '     +<<Create>> constructor(defaultSearchParam)
+    '     +run(searchParam)
+    ' }
+    ' TransactionScript <|-- SetSearchParamTS
+
+    ' class SetSearchResultsParamTS {
+    '     +defaultSearchResultsParam: string
+
+    '     +<<Create>> constructor(defaultSearchResultsParam)
+    '     +run(searchResultsParam)
+    ' }
+    ' TransactionScript <|-- SetSearchResultsParamTS
+
+    class SearchTS {
+        +_isFetching: boolean
+        +_isInitialized: boolean
+        +_searchItems: Repo[]
+        +_error: Error
+
+        +<<Create>> constructor()
+        +run(searchTerm: string, requestSortBy: RequestSortBy)
+    }
+    TransactionScript <|-- SearchTS
+
+    class ReposStore {
+        +_searchTerm: string
+        +_userIsSearching: boolean
+        +_isInitialized: boolean
+        +_isFetching: boolean
+        +_error: Error
+        +_requestSortBy: RequestSortBy
+        +_sortBy: SortBy
+        +_searchItems: Repo[]
+        +_itemsMap: Map<string, Repo[]>
+
+        +searchTerm(searchTerm: string): void
+        +userIsSearching(isSearching: boolean): void
+        +requestSortBy(requestSortBy: RequestSortBy): void
+        +sortBy(sortBy: SortBy): void
+        +nothingFound(): boolean
+    }
+
+    class RepoMapper {
+        -GITHUB_TOKEN: string
+
+        +read(searchTerm: string, sortBy: RequestSortBy): Repo[]
+    }
+
+    class DataBaseSearchRepo {
+        name: string
+        description: string
+        language: string
+        stargazers_count: number
+        forks_count: number
+        open_issues_count: number
+        watchers_count: number
+        score: number
+        owner.avatar_url: string
+        owner.login: string
+        created_at: Date
+        updated_at: Date
+        html_url: string
+
+        read(searchTerm: string, sortBy: string): RepoResponse[]
+    }
+    SearchTS <.. ReposStore
+    ReposStore <.. RepoMapper
+    RepoMapper <.. DataBaseSearchRepo
+
+@enduml
