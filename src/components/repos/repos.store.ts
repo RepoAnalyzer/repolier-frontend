@@ -1,41 +1,13 @@
-import { Contributor } from 'api/contributors.mapper';
-import { Languages } from 'api/languages.mapper';
-import { makeAutoObservable, toJS } from 'mobx';
-import { contributorsRepoService, contributorsStore, contributorsTS } from 'scripts/contributors.script';
-import { languagesRepoService, languagesStore, languagesTS } from 'scripts/languages.script';
+import { makeAutoObservable } from 'mobx';
 
 import { RequestSortBy } from 'components/repos/repo.mapper';
 import { getRepoFullName } from 'utils/get-repo-full-name';
 
+import { contributorsRepoService } from './contributors.service';
+import { getScore } from './getScore';
+import { languagesRepoService } from './languages.service';
 import { Repo, SortBy } from './repos.types';
 import { searchTS } from './search-ts';
-
-// import { REPOS } from './__mocks__';
-
-const MOST_STARS = 366721;
-// const MOST_FORKS = 242860;
-const GOOD_FORKS = 24286;
-const YEAR = 360 * 24 * 60 * 60 * 1000;
-// const BAD_NUMBER_OF_OPEN_ISSUES = 200;
-
-const getDateScore = (date: string, inPeriod: number) =>
-    Math.min(Date.now() - Number(new Date(date)), inPeriod) / inPeriod;
-
-const getScore = (repo: Repo) => {
-    // console.log(repo.name)
-
-    const scores = {
-        stars: repo.stars / MOST_STARS,
-        forks: Math.min(1, repo.forks / GOOD_FORKS),
-        updated: 1 - getDateScore(repo.updated_at, YEAR),
-        created: getDateScore(repo.created_at, 5 * YEAR),
-        // openIssues: 1 - repo.open_issues / BAD_NUMBER_OF_OPEN_ISSUES,
-    };
-
-    // console.log({ scores })
-
-    return Math.min(1, (scores.stars + scores.forks + scores.updated + scores.created * scores.updated) / 4);
-};
 
 export type LanguagesMap = Map<string, number>;
 
@@ -56,7 +28,7 @@ class ReposStore {
     public services = {
         languages: languagesRepoService,
         contributors: contributorsRepoService,
-    }
+    };
 
     constructor() {
         makeAutoObservable(this);
@@ -132,7 +104,7 @@ class ReposStore {
 
         this.itemsMap.delete(repoFullName);
 
-        Object.values(this.services).forEach((service) => service.remove(repoFullName))
+        this.removeFromDetailedComparison(repoFullName)
     }
 
     public removeFromDetailedComparison(repoFullName: string) {
@@ -147,7 +119,7 @@ class ReposStore {
             ...this._comparingItems.slice(repoIndex + 1),
         ];
 
-        Object.values(this.services).forEach((service) => service.remove(repoFullName))
+        Object.values(this.services).forEach((service) => service.remove(repoFullName));
     }
 
     public addToDetailedComparison(repoFullName: string) {
@@ -159,7 +131,7 @@ class ReposStore {
 
         this._comparingItems = [...this._comparingItems, repoFullName];
 
-        Object.values(this.services).forEach((service) => service.add(repo))
+        Object.values(this.services).forEach((service) => service.add(repo));
     }
 
     public setDetailedComparison(repoFullName: string, isChecked: boolean) {
