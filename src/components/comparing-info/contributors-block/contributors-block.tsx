@@ -20,7 +20,6 @@ export const Contributors = styled.div`
 // TODO: Add shimmer.
 export const ContributorsBlock = observer(() => {
     const contributors = reposStore.services.contributors.itemMap;
-    console.log({ comparingItems: reposStore.comparingItems })
 
     return (
         <ComparingInfoStyled>
