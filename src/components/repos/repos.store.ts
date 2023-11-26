@@ -1,12 +1,14 @@
-import { Contributor, getContributors } from "api/contributors";
-import { getLanguages, Languages } from "api/languages";
-import { makeAutoObservable } from "mobx";
+import { Contributor } from 'api/contributors.mapper';
+import { Languages } from 'api/languages.mapper';
+import { makeAutoObservable, toJS } from 'mobx';
+import { contributorsRepoService, contributorsStore, contributorsTS } from 'scripts/contributors.script';
+import { languagesRepoService, languagesStore, languagesTS } from 'scripts/languages.script';
 
-import { RequestSortBy } from "components/repos/repo.mapper";
-import { getRepoFullName } from "utils/get-repo-full-name";
+import { RequestSortBy } from 'components/repos/repo.mapper';
+import { getRepoFullName } from 'utils/get-repo-full-name';
 
-import { Repo, SortBy } from "./repos.types";
-import { searchTS } from "./search-ts";
+import { Repo, SortBy } from './repos.types';
+import { searchTS } from './search-ts';
 
 // import { REPOS } from './__mocks__';
 
@@ -16,7 +18,8 @@ const GOOD_FORKS = 24286;
 const YEAR = 360 * 24 * 60 * 60 * 1000;
 // const BAD_NUMBER_OF_OPEN_ISSUES = 200;
 
-const getDateScore = (date: string, inPeriod: number) => Math.min((Date.now() - Number(new Date(date))), inPeriod) / inPeriod
+const getDateScore = (date: string, inPeriod: number) =>
+    Math.min(Date.now() - Number(new Date(date)), inPeriod) / inPeriod;
 
 const getScore = (repo: Repo) => {
     // console.log(repo.name)
@@ -27,12 +30,14 @@ const getScore = (repo: Repo) => {
         updated: 1 - getDateScore(repo.updated_at, YEAR),
         created: getDateScore(repo.created_at, 5 * YEAR),
         // openIssues: 1 - repo.open_issues / BAD_NUMBER_OF_OPEN_ISSUES,
-    }
+    };
 
     // console.log({ scores })
 
     return Math.min(1, (scores.stars + scores.forks + scores.updated + scores.created * scores.updated) / 4);
-}
+};
+
+export type LanguagesMap = Map<string, number>;
 
 class ReposStore {
     _searchTerm = '';
@@ -44,16 +49,16 @@ class ReposStore {
     _sortBy: SortBy = 'stars';
     _searchItems: Repo[] = [];
 
-    itemsMap: Map<string, Repo> = new Map();
+    public itemsMap: Map<string, Repo> = new Map();
 
     _comparingItems: string[] = [];
-    _contributors: Map<string, Contributor[]> = new Map();
-    _languages: Map<string, Languages> = new Map();
+
+    public services = {
+        languages: languagesRepoService,
+        contributors: contributorsRepoService,
+    }
 
     constructor() {
-        // REPOS.forEach((repo) => {
-        //     this.itemsMap.set(getRepoFullName(repo), repo);
-        // })
         makeAutoObservable(this);
     }
 
@@ -93,10 +98,6 @@ class ReposStore {
         return searchTS._searchItems;
     }
 
-    // public set searchItems(repos: Repo[]) {
-    //     this._searchItems = repos;
-    // }
-
     public get isInitialized() {
         return searchTS._isInitialized;
     }
@@ -123,7 +124,7 @@ class ReposStore {
 
     public addToComparison(repo: Repo) {
         this.userIsSearching = false;
-        this.itemsMap.set(getRepoFullName(repo), repo)
+        this.itemsMap.set(getRepoFullName(repo), repo);
     }
 
     public removeFromComparison(repo: Repo) {
@@ -131,72 +132,42 @@ class ReposStore {
 
         this.itemsMap.delete(repoFullName);
 
-        this.removeFromDetailedComparison(repoFullName);
-        this.removeContributors(repoFullName);
-        this.removeLanguages(repoFullName);
+        Object.values(this.services).forEach((service) => service.remove(repoFullName))
     }
 
     public removeFromDetailedComparison(repoFullName: string) {
         const repoIndex = this._comparingItems.findIndex((name) => name === repoFullName);
 
-        this._comparingItems = [...this._comparingItems.slice(0, repoIndex), ...this._comparingItems.slice(repoIndex + 1)];
+        if (repoIndex === -1) {
+            throw new TypeError(`Requested to remove data for nonexisting repo by name: ${repoFullName}`);
+        }
+
+        this._comparingItems = [
+            ...this._comparingItems.slice(0, repoIndex),
+            ...this._comparingItems.slice(repoIndex + 1),
+        ];
+
+        Object.values(this.services).forEach((service) => service.remove(repoFullName))
+    }
+
+    public addToDetailedComparison(repoFullName: string) {
+        const repo = this.itemsMap.get(repoFullName);
+
+        if (!repo) {
+            throw new TypeError(`Requested to get services data for nonexisting repo by name: ${repoFullName}`);
+        }
+
+        this._comparingItems = [...this._comparingItems, repoFullName];
+
+        Object.values(this.services).forEach((service) => service.add(repo))
     }
 
     public setDetailedComparison(repoFullName: string, isChecked: boolean) {
         if (isChecked) {
-            this._comparingItems = [...this._comparingItems, repoFullName];
-            void this.getContributors(repoFullName);
-            void this.getLanguages(repoFullName);
+            this.addToDetailedComparison(repoFullName);
         } else {
             this.removeFromDetailedComparison(repoFullName);
-            this.removeContributors(repoFullName);
-            this.removeLanguages(repoFullName);
         }
-    }
-
-
-    public get contributors() {
-        return Array.from(this._contributors.values());
-    }
-
-    public get contributorsMap() {
-        return this._contributors;
-    }
-
-    public async getContributors(repoFullName: string) {
-        const repo = this.itemsMap.get(repoFullName);
-
-        if (!repo) {
-            throw new TypeError(`Requested to get contributors for inexisting repo by name: ${repoFullName}`);
-        }
-
-        const contributors = await getContributors(repo.owner, repo.name);
-
-        this._contributors.set(repoFullName, contributors);
-    }
-
-    public removeContributors(repoFullName: string) {
-        this._contributors.delete(repoFullName);
-    }
-
-    public get languagesMap() {
-        return this._languages;
-    }
-
-    public async getLanguages(repoFullName: string) {
-        const repo = this.itemsMap.get(repoFullName);
-
-        if (!repo) {
-            throw new TypeError(`Requested to get languages for inexisting repo by name: ${repoFullName}`);
-        }
-
-        const languages = await getLanguages(repo.owner, repo.name);
-
-        this._languages.set(repoFullName, languages)
-    }
-
-    public removeLanguages(repoFullName: string) {
-        this._languages.delete(repoFullName);
     }
 
     public getRepoScore(repoFullName: string) {

@@ -2,7 +2,7 @@
     "compilerOptions": {
         "baseUrl": "src",
         "outDir": "build",
-        "target": "es5",
+        "target": "es2022",
         "lib": ["dom", "dom.iterable", "esnext"],
         "module": "esnext",
         "moduleResolution": "node",

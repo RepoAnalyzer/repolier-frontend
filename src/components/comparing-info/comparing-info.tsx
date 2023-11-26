@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 import { ContributorsBlock } from "./contributors-block";
 import { LanguagesBlock } from "./languages-block";
