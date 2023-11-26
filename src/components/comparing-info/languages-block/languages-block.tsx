@@ -1,7 +1,6 @@
 import React from 'react';
-import { keys } from 'lodash';
 import { observer } from 'mobx-react-lite';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { RepoLink } from 'components/repo-link';
 import { reposStore } from 'components/repos/repos.store';
@@ -13,13 +12,13 @@ export const LanguagesPies = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-`
+`;
 
 export const LanguagesBlock = observer(() => {
     if (reposStore.comparingItems.length < 1) {
         return null;
     }
-    const languagesMap = reposStore.languagesMap;
+    const languagesMap = reposStore.services.languages.itemMap;
 
     if (languagesMap.size < 1) {
         return <h2>Languages</h2>;
@@ -29,19 +28,21 @@ export const LanguagesBlock = observer(() => {
         <div>
             <h2>Languages</h2>
             <LanguagesPies>
-                {
-                    Array.from(reposStore.languagesMap.entries()).map(([repoFullName, repoLanguages]) => {
-                        const repo = reposStore.itemsMap.get(repoFullName);
+                {Array.from(languagesMap.entries()).map(([repoFullName, repoLanguages]) => {
+                    const repo = reposStore.itemsMap.get(repoFullName);
 
-                        return (
-                            <div key={repoFullName}>
-                                {repo && <RepoLink repo={repo} />}
-                                {keys(repoLanguages).length < 1 ? <p>No stats</p> : <LanguagesPie repoLanguages={repoLanguages} />}
-                            </div>
-                        );
-                    })
-                }
+                    return (
+                        <div key={repoFullName}>
+                            {repo && <RepoLink repo={repo} />}
+                            {repoLanguages.size < 1 ? (
+                                <p>No stats</p>
+                            ) : (
+                                <LanguagesPie repoLanguages={repoLanguages} />
+                            )}
+                        </div>
+                    );
+                })}
             </LanguagesPies>
-        </div >
+        </div>
     );
 });

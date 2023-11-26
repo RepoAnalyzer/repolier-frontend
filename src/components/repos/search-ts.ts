@@ -1,13 +1,9 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction } from 'mobx';
+import { TransactionScript } from 'scripts/transaction-script';
 
-import { repoMapper, RequestSortBy } from "components/repos/repo.mapper";
+import { repoMapper, RequestSortBy } from 'components/repos/repo.mapper';
 
-import { Repo } from "./repos.types";
-
-interface TransactionScript {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    run: (...args: any[]) => void
-}
+import { Repo } from './repos.types';
 
 export class SearchTS implements TransactionScript {
     _searchItems: Repo[] = [];
@@ -16,14 +12,14 @@ export class SearchTS implements TransactionScript {
     _error?: Error = undefined;
 
     constructor() {
-        makeAutoObservable(this)
+        makeAutoObservable(this);
     }
 
     public async run(searchTerm: string, requestSortBy: RequestSortBy) {
         if (!searchTerm) {
             runInAction(() => {
-                this._searchItems = []
-            })
+                this._searchItems = [];
+            });
 
             return;
         }
@@ -31,26 +27,25 @@ export class SearchTS implements TransactionScript {
         try {
             runInAction(() => {
                 this._isFetching = true;
-            })
+            });
 
-            const result = await repoMapper.read(searchTerm, requestSortBy)
+            const result = await repoMapper.read(searchTerm, requestSortBy);
 
             runInAction(() => {
                 this._isFetching = false;
                 this._isInitialized = true;
                 this._searchItems = result;
-            })
+            });
 
             return result;
-
         } catch (error) {
             if (error instanceof Error) {
                 runInAction(() => {
                     this._error = error as Error;
-                })
+                });
             }
         }
     }
 }
 
-export const searchTS = new SearchTS()
+export const searchTS = new SearchTS();
