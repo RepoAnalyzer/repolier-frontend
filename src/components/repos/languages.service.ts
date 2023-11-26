@@ -2,7 +2,7 @@ import { languagesTS } from 'scripts/languages.script';
 import { languagesStore } from 'stores/language.store';
 import { Store } from 'stores/store';
 
-import { LanguagesMap } from 'components/repos/repos.store';
+import { LanguagesMap } from 'components/repos/repos.mediator';
 import { Repo } from 'components/repos/repos.types';
 import { getRepoFullName } from 'utils/get-repo-full-name';
 
