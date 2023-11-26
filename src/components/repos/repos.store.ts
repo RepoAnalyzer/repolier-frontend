@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { searchTS } from 'scripts/search.script';
 
 import { RequestSortBy } from 'components/repos/repo.mapper';
 import { getRepoFullName } from 'utils/get-repo-full-name';
@@ -7,7 +8,6 @@ import { contributorsRepoService } from './contributors.service';
 import { getScore } from './getScore';
 import { languagesRepoService } from './languages.service';
 import { Repo, SortBy } from './repos.types';
-import { searchTS } from './search-ts';
 
 export type LanguagesMap = Map<string, number>;
 
@@ -104,7 +104,7 @@ class ReposStore {
 
         this.itemsMap.delete(repoFullName);
 
-        this.removeFromDetailedComparison(repoFullName)
+        this.removeFromDetailedComparison(repoFullName);
     }
 
     public removeFromDetailedComparison(repoFullName: string) {
