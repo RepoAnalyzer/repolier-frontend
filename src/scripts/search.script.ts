@@ -2,8 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { TransactionScript } from 'scripts/transaction-script';
 
 import { repoMapper, RequestSortBy } from 'components/repos/repo.mapper';
-
-import { Repo } from './repos.types';
+import { Repo } from 'components/repos/repos.types';
 
 export class SearchTS implements TransactionScript {
     _searchItems: Repo[] = [];

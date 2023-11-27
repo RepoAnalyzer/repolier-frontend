@@ -1,9 +1,10 @@
-import { getRepoFullName } from 'utils/get-repo-full-name';
-import { Store } from 'stores/store';
 import { Contributor } from 'api/contributors.mapper';
 import { contributorsTS } from 'scripts/contributors.script';
-import { Repo } from 'components/repos/repos.types';
 import { contributorsStore } from 'stores/contributors.store';
+import { Store } from 'stores/store';
+
+import { Repo } from 'components/repos/repos.types';
+import { getRepoFullName } from 'utils/get-repo-full-name';
 
 import { RepoService } from './repo-service';
 

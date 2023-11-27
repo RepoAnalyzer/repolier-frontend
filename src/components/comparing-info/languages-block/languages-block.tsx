@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { styled } from 'styled-components';
 
 import { RepoLink } from 'components/repo-link';
-import { reposStore } from 'components/repos/repos.store';
+import { reposMediator } from 'components/repos/repos.mediator';
 
 import { LanguagesPie } from './languages-pie';
 
@@ -15,10 +15,10 @@ export const LanguagesPies = styled.div`
 `;
 
 export const LanguagesBlock = observer(() => {
-    if (reposStore.comparingItems.length < 1) {
+    if (reposMediator.comparingItems.length < 1) {
         return null;
     }
-    const languagesMap = reposStore.services.languages.itemMap;
+    const languagesMap = reposMediator.services.languages.itemMap;
 
     if (languagesMap.size < 1) {
         return <h2>Languages</h2>;
@@ -29,7 +29,7 @@ export const LanguagesBlock = observer(() => {
             <h2>Languages</h2>
             <LanguagesPies>
                 {Array.from(languagesMap.entries()).map(([repoFullName, repoLanguages]) => {
-                    const repo = reposStore.itemsMap.get(repoFullName);
+                    const repo = reposMediator.itemsMap.get(repoFullName);
 
                     return (
                         <div key={repoFullName}>

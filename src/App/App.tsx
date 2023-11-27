@@ -1,38 +1,38 @@
 import React, { useState } from 'react';
-import { palette, semanticPalette } from 'assets/palette/palette';
-import { observer } from 'mobx-react-lite';
-import styled from 'styled-components'
-
-import { RepoCard } from 'components/repo-card/repo-card';
-import { reposStore } from 'components/repos/repos.store';
-import { SearchBar } from 'components/search-bar/search-bar';
 import { BiUpArrow } from 'react-icons/bi';
 import { GiPlantRoots } from 'react-icons/gi';
-import { GoPin } from 'react-icons/go'
+import { GoPin } from 'react-icons/go';
+import { palette, semanticPalette } from 'assets/palette/palette';
+import { observer } from 'mobx-react-lite';
+import { styled } from 'styled-components';
+
 import { ComparingInfo } from 'components/comparing-info/comparing-info';
+import { RepoCard } from 'components/repo-card/repo-card';
+import { reposMediator } from 'components/repos/repos.mediator';
+import { SearchBar } from 'components/search-bar/search-bar';
 import { getRepoFullName } from 'utils/get-repo-full-name';
 
 export const Button = styled.button`
     color: ${semanticPalette.contrasting};
-`
+`;
 
 export const AppStyled = styled.div`
     position: relative;
     background-color: ${semanticPalette.primary};
-`
+`;
 
 const HEADER_HEIGHT = '98px';
 const THIN_HEADER_HEIGHT = '20px';
 
 export type HeaderStyledProps = {
     isVisible: boolean;
-}
+};
 
 //   padding-top should be no lower then THIN_HEADER_HEIGHT otherwise it overlaps with
 // input content no matter the z-index.
 export const HeaderStyled = styled.header<HeaderStyledProps>`
     z-index: 2;
-    position: ${(props) => props.isVisible ? 'fixed' : 'absolute'};
+    position: ${(props) => (props.isVisible ? 'fixed' : 'absolute')};
     width: 100%;
     height: ${HEADER_HEIGHT};
     background-color: ${palette.black};
@@ -41,7 +41,7 @@ export const HeaderStyled = styled.header<HeaderStyledProps>`
     flex-direction: column;
     align-items: center;
     padding: ${THIN_HEADER_HEIGHT} 24px 0;
-`
+`;
 
 export const HeaderThin = styled.div`
     z-index: 2;
@@ -53,11 +53,11 @@ export const HeaderThin = styled.div`
     height: ${THIN_HEADER_HEIGHT};
     cursor: pointer;
     background-color: ${palette.black};
-`
+`;
 
 export type HeaderProps = {
     children: JSX.Element;
-}
+};
 
 const HEADER_ICON_SIZE = '12px';
 const HEADER_ICON_COLOR = semanticPalette.emphasizing;
@@ -73,7 +73,7 @@ export const GoPinStyled = styled(GoPin)`
     ${HeaderThin}:hover & {
         fill: ${HEADER_ICON_COLOR_HOVER};
     }
-`
+`;
 
 export const BiUpArrowStyled = styled(BiUpArrow)`
     margin-top: 4px;
@@ -88,29 +88,25 @@ export const BiUpArrowStyled = styled(BiUpArrow)`
         stroke: ${HEADER_ICON_COLOR_HOVER};
         fill: ${HEADER_ICON_COLOR_HOVER};
     }
-`
+`;
 
 export const Header = (props: HeaderProps) => {
     const [isVisible, setIsVisible] = useState(false);
 
     return (
         <>
-            <HeaderStyled isVisible={isVisible}>
-                {props.children}
-            </HeaderStyled>
-            <HeaderThin
-                onClick={() => setIsVisible((isVisible) => !isVisible)}
-            >
+            <HeaderStyled isVisible={isVisible}>{props.children}</HeaderStyled>
+            <HeaderThin onClick={() => setIsVisible((isVisible) => !isVisible)}>
                 {isVisible ? <BiUpArrowStyled /> : <GoPinStyled />}
             </HeaderThin>
         </>
     );
-}
+};
 
 export const Main = styled.main`
     padding: 16px 32px;
     margin-top: ${HEADER_HEIGHT};
-`
+`;
 
 export const RepoCards = styled.ul`
     padding: 0;
@@ -119,16 +115,16 @@ export const RepoCards = styled.ul`
     justify-content: space-around;
     gap: 24px;
     flex-wrap: wrap;
-`
+`;
 
 export const SearchBarStyled = styled(SearchBar)`
     z-index: 1;
-`
+`;
 
 export const GiPlantRootsStyled = styled(GiPlantRoots)`
     width: 400px;
     height: 400px;
-`
+`;
 
 export const GreetingMessage = styled.h1`
     text-align: center;
@@ -141,7 +137,7 @@ export const GreetingMessage = styled.h1`
     width: 100px;
     font-weight: 600;
     font-size: 20px;
-`
+`;
 
 const Greeting = () => {
     return (
@@ -150,7 +146,7 @@ const Greeting = () => {
             <GiPlantRootsStyled />
         </div>
     );
-}
+};
 
 export const App = observer(() => {
     return (
@@ -160,19 +156,24 @@ export const App = observer(() => {
             </Header>
             <Main>
                 <RepoCards>
-                    {reposStore.items.length < 1 ? <Greeting /> :
-                        reposStore.items.map(repo => (
+                    {reposMediator.items.length < 1 ? (
+                        <Greeting />
+                    ) : (
+                        reposMediator.items.map((repo) => (
                             <RepoCard
                                 key={repo.name}
                                 repo={repo}
-                                score={reposStore.getRepoScore(getRepoFullName(repo))}
-                                onRemoveFromComparison={(repo) => reposStore.removeFromComparison(repo)}
-                                onRepoDetailedComparisonCheck={(e) => reposStore.setDetailedComparison(e.target?.id, e.target.checked)}
+                                score={reposMediator.getRepoScore(getRepoFullName(repo))}
+                                onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
+                                onRepoDetailedComparisonCheck={(e) =>
+                                    reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
+                                }
                             />
-                        ))}
+                        ))
+                    )}
                 </RepoCards>
                 <ComparingInfo />
             </Main>
-        </AppStyled >
+        </AppStyled>
     );
 });

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { styled } from 'styled-components';
 
 import { RepoLink } from 'components/repo-link';
-import { reposStore } from 'components/repos/repos.store';
+import { reposMediator } from 'components/repos/repos.mediator';
 
 import { ContributorsBar, ContributorsBarStyled } from './contributors-bar';
 
@@ -19,15 +19,14 @@ export const Contributors = styled.div`
 
 // TODO: Add shimmer.
 export const ContributorsBlock = observer(() => {
-    const contributors = reposStore.services.contributors.itemMap;
-    console.log({ comparingItems: reposStore.comparingItems })
+    const contributors = reposMediator.services.contributors.itemMap;
 
     return (
         <ComparingInfoStyled>
-            {reposStore.comparingItems.length > 0 && <h2>Contributions</h2>}
+            {reposMediator.comparingItems.length > 0 && <h2>Contributions</h2>}
             {contributors.size > 0 &&
                 Array.from(contributors.entries()).map(([repoFullName, contributorsForRepo]) => {
-                    const repo = reposStore.itemsMap.get(repoFullName);
+                    const repo = reposMediator.itemsMap.get(repoFullName);
 
                     return (
                         <Contributors key={repoFullName}>
