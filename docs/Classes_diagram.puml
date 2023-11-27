@@ -4,9 +4,48 @@
     ' Show attribute visibility as text (+, ~, #, -), not as icons.
     skinparam classAttributeIconSize 0
 
+    class ReposMediator {
+        <<set/get>> -searchTerm: string
+        <<set/get>> -userIsSearching: boolean
+        <<set/get>> -isInitialized: boolean
+        <<get>> -isFetching: boolean
+        <<get>> -error: Error
+        <<get/set>> -requestSortBy: RequestSortBy
+        <<get/set>> -sortBy: SortBy
+
+        +itemsMap: Map<string, Repo>
+        +items: Repo[]
+
+        <<get>> -comparingItems: string[]
+
+        ' searchTS
+        +searchItems: Repo[]
+        +nothingFound: boolean
+
+        +services: Record<string, RepoService>
+        <<Create>> +constructor()
+
+        +addToComparison(repo: Repo): void
+        +addToDetailedComparison(repoFullName: string): void
+        +removeFromComparison(repo: Repo): void
+        +removeFromDetailedComparison(repoFullName: string): void
+        +setDetailedComparison(repoFullName: string): void
+
+        +getRepoScore(repoFullName: string): number
+    }
+
+    ' ReposMediator ..> RepoMapper
+
+
     interface TransactionScript {
         +run(args)
     }
+
+    interface RepoService {
+        +add(repo: Repo): void
+        +remove(repoFullName: string): void
+    }
+    ReposMediator .> RepoService
 
     ' class SetSearchParamTS {
     '     +defaultSearchParam: string
@@ -24,60 +63,124 @@
     ' }
     ' TransactionScript <|-- SetSearchResultsParamTS
 
+    class LanguagesRepoService {
+        +add(repo: Repo): void
+        +remove(repoFullName: string): void
+    }
+
+    RepoService <|-- LanguagesRepoService
+    ReposMediator ..> LanguagesRepoService
+
     class SearchTS {
         +_isFetching: boolean
         +_isInitialized: boolean
         +_searchItems: Repo[]
         +_error: Error
 
-        +<<Create>> constructor()
-        +run(searchTerm: string, requestSortBy: RequestSortBy)
+        <<Create>> +constructor()
+        +run(searchTerm: string, requestSortBy: RequestSortBy): Promise<Repo[]>
     }
+    ReposMediator ....> SearchTS
     TransactionScript <|-- SearchTS
 
-    class ReposStore {
-        +_searchTerm: string
-        +_userIsSearching: boolean
-        +_isInitialized: boolean
-        +_isFetching: boolean
-        +_error: Error
-        +_requestSortBy: RequestSortBy
-        +_sortBy: SortBy
-        +_searchItems: Repo[]
-        +_itemsMap: Map<string, Repo[]>
+    class LanguagesTS {
+        <<Create>> +constructor()
+        +run(repo: Repo): void
+    }
+    TransactionScript <|-- LanguagesTS
+    LanguagesRepoService o--- LanguagesTS
 
-        +searchTerm(searchTerm: string): void
-        +userIsSearching(isSearching: boolean): void
-        +requestSortBy(requestSortBy: RequestSortBy): void
-        +sortBy(sortBy: SortBy): void
-        +nothingFound(): boolean
+    class ContributorsRepoService {
+        +add(repo: Repo): void
+        +remove(repoFullName: string): void
+    }
+    ReposMediator ..> ContributorsRepoService
+    RepoService <|-- ContributorsRepoService
+
+    class ContributorsTS {
+        <<Create>> +constructor()
+        +run(repo: Repo): void
+    }
+    TransactionScript <|-- ContributorsTS
+    ContributorsRepoService o--- ContributorsTS
+
+    class LanguagesStore {
+        +getItemsFromApi(config: GetLanguagesRequestConfig): Promise<Languages>
+        +processPayload(payload: Languages): void
+    }
+    Store <|-- StoreWithFetch
+    StoreWithFetch <|- LanguagesStore
+    StoreWithFetch <|- ContributorsStore
+
+    LanguagesTS ...> LanguagesStore
+
+
+    class ContributorsStore {
+        +getItemsFromApi(config: GetContributorsRequestConfig): Promise<Contributors[]>
+        +processPayload(payload: Languages): void
     }
 
+    ContributorsTS ...> ContributorsStore
+
+
+    LanguagesStore ..> LanguagesMapper
+    class LanguagesMapper {
+        -GITHUB_TOKEN: string
+
+        <<Create>> +constructor()
+        +read(config: GetLanguagesRequestConfig): Promise<Languages>
+    }
+
+    SearchTS ...> RepoMapper
     class RepoMapper {
         -GITHUB_TOKEN: string
 
-        +read(searchTerm: string, sortBy: RequestSortBy): Repo[]
+        <<Create>> +constructor()
+        +read(searchTerm: string, sortBy: RequestSortBy): Promise<Repo[]>
     }
+    RepoMapper ..> DataBaseSearchRepo
+
+    ContributorsStore ..> ContributorsMapper
+    class ContributorsMapper {
+        -GITHUB_TOKEN: string
+
+        <<Create>> +constructor()
+        +read(config: GetContributorsRequestConfig): Promise<Contributor[]>
+    }
+    ContributorsMapper ..> DataBaseRepoContributor
+
+    class DataBaseRepoContributor {
+        +id: number
+        +login: string
+        +contributions: number
+        +avatar_url: string
+    }
+    DataBaseRepoContributor -left- DataBaseSearchRepo
 
     class DataBaseSearchRepo {
-        name: string
-        description: string
-        language: string
-        stargazers_count: number
-        forks_count: number
-        open_issues_count: number
-        watchers_count: number
-        score: number
-        owner.avatar_url: string
-        owner.login: string
-        created_at: Date
-        updated_at: Date
-        html_url: string
+        +name: string
+        +description: string
+        +language: string
+        +stargazers_count: number
+        +forks_count: number
+        +open_issues_count: number
+        +watchers_count: number
+        +score: number
+        +owner.avatar_url: string
+        +owner.login: string
+        +created_at: Date
+        +updated_at: Date
+        +html_url: string
 
-        read(searchTerm: string, sortBy: string): RepoResponse[]
+        +read(searchTerm: string, sortBy: string): RepoResponse[]
     }
-    SearchTS <.. ReposStore
-    ReposStore <.. RepoMapper
-    RepoMapper <.. DataBaseSearchRepo
+
+    LanguagesMapper ..> DataBaseRepoLanguage
+    DataBaseRepoLanguage - DataBaseSearchRepo
+
+    class DataBaseRepoLanguage {
+        +name: string
+        +usage: string
+    }
 
 @enduml
