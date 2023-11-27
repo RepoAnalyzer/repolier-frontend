@@ -4,51 +4,51 @@ autonumber
 participant Пользователь as U
 
 loop пользователь набирает запрос / выбирает параметры
-    U --> ReposStore: ReposStore.searchTerm
-    activate ReposStore
-    U --> ReposStore: ReposStore.sortBy
-    ReposStore --> SearchTS: SearchTS.run
+    U --> ReposMediator: ReposMediator.searchTerm
+    activate ReposMediator
+    U --> ReposMediator: ReposMediator.sortBy
+    ReposMediator --> SearchTS: SearchTS.run
     activate SearchTS
-    ReposStore <-- SearchTS: SearchTS.isFetching = true
-    U <-- ReposStore: ReposStore.isFetching = true
+    ReposMediator <-- SearchTS: SearchTS.isFetching = true
+    U <-- ReposMediator: ReposMediator.isFetching = true
 end
 
 SearchTS --> RepoMapper: RepoMapper.read
 activate RepoMapper
-RepoMapper --> Database: read
-activate Database
+RepoMapper --> DatabaseSearchRepo: read
+activate DatabaseSearchRepo
 
 alt успешно
-    RepoMapper <-- Database: RepoResponse[]
+    RepoMapper <-- DatabaseSearchRepo: RepoResponse[]
     SearchTS <-- RepoMapper: Repo[]
-    ReposStore <-- SearchTS: Repo[]
-    ReposStore <-- SearchTS: isFetching = false
-    ReposStore <-- SearchTS: isInitialized = true
+    ReposMediator <-- SearchTS: Repo[]
+    ReposMediator <-- SearchTS: isFetching = false
+    ReposMediator <-- SearchTS: isInitialized = true
     alt данные по запросу есть
-        U <-- ReposStore: RepoStore.items
+        U <-- ReposMediator: RepoStore.items
 
-        U --> ReposStore : ReposStore.requestSortBy
-        U <-- ReposStore : ReposStore.items
+        U --> ReposMediator : ReposMediator.requestSortBy
+        U <-- ReposMediator : ReposMediator.items
     else данных нет
-        U <-- ReposStore: RepoStore.nothingFound
+        U <-- ReposMediator: RepoStore.nothingFound
     end
 else ошибка
-    RepoMapper <-- Database: Error
-    deactivate Database
+    RepoMapper <-- DatabaseSearchRepo: Error
+    deactivate DatabaseSearchRepo
     SearchTS <-- RepoMapper: Error
     deactivate RepoMapper
-    ReposStore <-- SearchTS: SearchTS.error
-    ReposStore <-- SearchTS: isFetching = false
+    ReposMediator <-- SearchTS: SearchTS.error
+    ReposMediator <-- SearchTS: isFetching = false
     alt предвиденная ошибка
-        ReposStore <-- SearchTS: isInitialized = true
+        ReposMediator <-- SearchTS: isInitialized = true
     else непредвиденная ошибка
-        ReposStore <-- SearchTS: isInitialized = false
+        ReposMediator <-- SearchTS: isInitialized = false
     end
 
     deactivate SearchTS
-    U <-- ReposStore: ReposStore.error
+    U <-- ReposMediator: ReposMediator.error
 end
 
-deactivate ReposStore
+deactivate ReposMediator
 
 @enduml
