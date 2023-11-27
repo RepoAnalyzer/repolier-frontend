@@ -1,0 +1,89 @@
+@startuml
+autonumber
+' Search
+participant Пользователь as U
+
+loop пользователь выбирает, какие репозитории добавить к детальному сравнению
+    U --> ReposMediator: ReposMediator.addToDetailedComparison
+    activate ReposMediator
+    U <-- ReposMediator: ReposMediator.comparingitems
+end
+par запрос ко всем сервисам, связанным с детальным сравнением
+    ReposMediator --> LanguagesRepoService: LanguagesRepoService.add
+    activate LanguagesRepoService
+    LanguagesRepoService --> LanguagesTS: LanguagesTS.run
+    activate LanguagesTS
+    LanguagesTS --> LanguagesStore: LanguagesStore.fetch
+    activate LanguagesStore
+    LanguagesStore --> LanguagesMapper: LanguagesMapper.read
+    activate LanguagesMapper
+    LanguagesMapper --> DatabaseRepoLanguage: read
+    activate DatabaseRepoLanguage
+
+    LanguagesMapper <-- DatabaseRepoLanguage: LanguagesResponse
+    deactivate DatabaseRepoLanguage
+    LanguagesStore <-- LanguagesMapper: Languages
+    deactivate LanguagesMapper
+    LanguagesTS <-- LanguagesStore: Languages
+    deactivate LanguagesStore
+    LanguagesRepoService <-- LanguagesTS: Languages
+    deactivate LanguagesTS
+    ReposMediator <-- LanguagesRepoService: LanguagesRepoService.itemMap
+    deactivate LanguagesRepoService
+    U <-- ReposMediator: ReposMediator.services.languages.itemMap
+else
+    ReposMediator --> ContributorsRepoService: ContributorsRepoService.add
+    activate ContributorsRepoService
+    ContributorsRepoService --> ContributorsTS: ContributorsTS.run
+    activate ContributorsTS
+    ContributorsTS --> ContributorsStore: ContributorsStore.fetch
+    activate ContributorsStore
+    ContributorsStore --> ContributorsMapper: ContributorsMapper.read
+    activate ContributorsMapper
+    ContributorsMapper --> DatabaseRepoContributor: read
+    activate DatabaseRepoContributor
+
+    ContributorsMapper <-- DatabaseRepoContributor: ContributorsResponse
+    deactivate DatabaseRepoContributor
+    ContributorsStore <-- ContributorsMapper: Contributor[]
+    deactivate ContributorsMapper
+    ContributorsTS <-- ContributorsStore: Contributor[]
+    deactivate ContributorsStore
+    ContributorsRepoService <-- ContributorsTS: Contributor[]
+    deactivate ContributorsTS
+    ReposMediator <-- ContributorsRepoService: ContributorsRepoService.itemMap
+    deactivate ContributorsRepoService
+    U <-- ReposMediator: ReposMediator.services.contributors.itemMap
+    deactivate ReposMediator
+end
+
+loop пользователь выбирает, какие репозитории убрать из детального сравнения
+    U --> ReposMediator: ReposMediator.removeFromDetailedComparison
+    activate ReposMediator
+    U <-- ReposMediator: ReposMediator.comparingitems
+end
+par удаление связанных с репозиторием данных со всех сервисов детального сравнения
+    ReposMediator --> LanguagesRepoService: LanguagesRepoService.remove
+    activate LanguagesRepoService
+    LanguagesRepoService --> LanguagesStore: LanguagesStore.deleteItem
+    activate LanguagesStore
+
+    LanguagesRepoService <-- LanguagesStore: LanguagesStore.itemMap
+    deactivate LanguagesStore
+    ReposMediator <-- LanguagesRepoService: LanguagesRepoService.itemMap
+    deactivate LanguagesRepoService
+    U <-- ReposMediator: ReposMediator.services.languages.itemMap
+else
+    ReposMediator --> ContributorsRepoService: ContributorsRepoService.remove
+    activate ContributorsRepoService
+    ContributorsRepoService --> ContributorsStore: ContributorsStore.deleteItem
+    activate ContributorsStore
+
+    ContributorsRepoService <-- ContributorsStore: ContributorsStore.itemMap
+    deactivate ContributorsStore
+    ReposMediator <-- ContributorsRepoService: ContributorsRepoService.itemMap
+    deactivate ContributorsRepoService
+    U <-- ReposMediator: ReposMediator.services.contributors.itemMap
+    deactivate ReposMediator
+end
+@enduml
