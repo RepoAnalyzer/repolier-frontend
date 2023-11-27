@@ -10,8 +10,8 @@
         <<set/get>> -isInitialized: boolean
         <<get>> -isFetching: boolean
         <<get>> -error: Error
-        <<get/set>> -requestSortBy: RequestSortBy
-        <<get/set>> -sortBy: SortBy
+        <<set/get>> -requestSortBy: RequestSortBy
+        <<set/get>> -sortBy: SortBy
 
         +itemsMap: Map<string, Repo>
         +items: Repo[]
@@ -33,6 +33,17 @@
 
         +getRepoScore(repoFullName: string): number
     }
+    note as N1
+        <<set/get>> прототип обозначает методы get и set, соответствующие
+        приватному полю с таким же названием, но с подчёркиванием вначале.
+        Например, <<set/get>> -searchTerm означает:
+            -_searchTerm: string
+            +searchTerm(searchTerm: string): void
+            +searchTerm(): string
+
+        Аналогично с <<set>> и <<get>>, но уже лишь с одним аксессором:
+        либо с set, либо с get методом соответственно.
+    end note
 
     ' ReposMediator ..> RepoMapper
 
@@ -108,9 +119,9 @@
         +getItemsFromApi(config: GetLanguagesRequestConfig): Promise<Languages>
         +processPayload(payload: Languages): void
     }
-    Store <|-- StoreWithFetch
-    StoreWithFetch <|- LanguagesStore
-    StoreWithFetch <|- ContributorsStore
+    ' Store <|-- StoreWithFetch
+    ' StoreWithFetch <|- LanguagesStore
+    ' StoreWithFetch <|- ContributorsStore
 
     LanguagesTS ...> LanguagesStore
 
@@ -138,7 +149,7 @@
         <<Create>> +constructor()
         +read(searchTerm: string, sortBy: RequestSortBy): Promise<Repo[]>
     }
-    RepoMapper ..> DataBaseSearchRepo
+    RepoMapper ..> DatabaseSearchRepo
 
     ContributorsStore ..> ContributorsMapper
     class ContributorsMapper {
@@ -147,17 +158,17 @@
         <<Create>> +constructor()
         +read(config: GetContributorsRequestConfig): Promise<Contributor[]>
     }
-    ContributorsMapper ..> DataBaseRepoContributor
+    ContributorsMapper ..> DatabaseRepoContributor
 
-    class DataBaseRepoContributor {
+    class DatabaseRepoContributor {
         +id: number
         +login: string
         +contributions: number
         +avatar_url: string
     }
-    DataBaseRepoContributor -left- DataBaseSearchRepo
+    DatabaseRepoContributor -left- DatabaseSearchRepo
 
-    class DataBaseSearchRepo {
+    class DatabaseSearchRepo {
         +name: string
         +description: string
         +language: string
@@ -175,10 +186,10 @@
         +read(searchTerm: string, sortBy: string): RepoResponse[]
     }
 
-    LanguagesMapper ..> DataBaseRepoLanguage
-    DataBaseRepoLanguage - DataBaseSearchRepo
+    LanguagesMapper ..> DatabaseRepoLanguage
+    DatabaseRepoLanguage - DatabaseSearchRepo
 
-    class DataBaseRepoLanguage {
+    class DatabaseRepoLanguage {
         +name: string
         +usage: string
     }
