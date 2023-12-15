@@ -140,7 +140,7 @@
 
     ContributorsTS ---> ContributorsStore
     AddContributorTS ---> ContributorsStore
-    AddContributorTS ---> RepoMapper
+    AddContributorTS ----> RepoMapper
 
     LanguagesStore --> LanguagesMapper
     class LanguagesMapper {
@@ -150,7 +150,7 @@
         +read(config: GetLanguagesRequestConfig): Promise<Languages>
     }
 
-    SearchTS ---> RepoMapper
+    SearchTS ----> RepoMapper
     class RepoMapper {
         -GITHUB_TOKEN: string
 
@@ -158,7 +158,7 @@
         +read(searchTerm: string, sortBy: RequestSortBy): Promise<Repo[]>
         +update({ repoName, ownerName, data }: UpdateRepoRequestConfig): Promise<Repo>
     }
-    RepoMapper --> DatabaseSearchRepo
+    RepoMapper -> DatabaseSearchRepo
 
     ContributorsStore --> ContributorsMapper
     class ContributorsMapper {
