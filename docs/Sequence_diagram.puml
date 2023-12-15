@@ -4,8 +4,8 @@ autonumber
 participant Пользователь as U
 participant ReposMediator
 note right of ReposMediator
-      ReposMediator является наблюдаемым (observable),
-    при изменении состояния посылает сигналы наблюдателям (observers subjects).
+      Некоторые классы являются наблюдаемымыми (observable),
+    при изменении состояния посылают сигналы наблюдателям (observers subjects).
       Тонкости паттерна observer на данной диаграмме не помечались,
     так как они полностью инкапсулированы во внешней библиотеке.
 end note

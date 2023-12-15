@@ -2,22 +2,29 @@
 autonumber
 ' Search
 participant Пользователь as U
+participant ReposMediator
+note right of ReposMediator
+      Некоторые классы являются наблюдаемыми (observable),
+    при изменении состояния посылает сигналы наблюдателям (observers subjects).
+      Тонкости паттерна observer на данной диаграмме не помечались,
+    так как они полностью инкапсулированы во внешней библиотеке.
+end note
 
 loop пользователь выбирает, какие репозитории добавить к детальному сравнению
-    U --> ReposMediator: ReposMediator.addToDetailedComparison
+    U -> ReposMediator: ReposMediator.addToDetailedComparison
     activate ReposMediator
     U <-- ReposMediator: ReposMediator.comparingitems
 end
 par запрос ко всем сервисам, связанным с детальным сравнением
-    ReposMediator --> LanguagesRepoService: LanguagesRepoService.add
+    ReposMediator ->> LanguagesRepoService: LanguagesRepoService.add
     activate LanguagesRepoService
-    LanguagesRepoService --> LanguagesTS: LanguagesTS.run
+    LanguagesRepoService ->> LanguagesTS: LanguagesTS.run
     activate LanguagesTS
-    LanguagesTS --> LanguagesStore: LanguagesStore.fetch
+    LanguagesTS ->> LanguagesStore: LanguagesStore.fetch
     activate LanguagesStore
-    LanguagesStore --> LanguagesMapper: LanguagesMapper.read
+    LanguagesStore ->> LanguagesMapper: LanguagesMapper.read
     activate LanguagesMapper
-    LanguagesMapper --> DatabaseRepoLanguage: read
+    LanguagesMapper -> DatabaseRepoLanguage: read
     activate DatabaseRepoLanguage
 
     LanguagesMapper <-- DatabaseRepoLanguage: LanguagesResponse
@@ -32,15 +39,15 @@ par запрос ко всем сервисам, связанным с дета�
     deactivate LanguagesRepoService
     U <-- ReposMediator: ReposMediator.services.languages.itemMap
 else
-    ReposMediator --> ContributorsRepoService: ContributorsRepoService.add
+    ReposMediator ->> ContributorsRepoService: ContributorsRepoService.add
     activate ContributorsRepoService
-    ContributorsRepoService --> ContributorsTS: ContributorsTS.run
+    ContributorsRepoService ->> ContributorsTS: ContributorsTS.run
     activate ContributorsTS
-    ContributorsTS --> ContributorsStore: ContributorsStore.fetch
+    ContributorsTS ->> ContributorsStore: ContributorsStore.fetch
     activate ContributorsStore
-    ContributorsStore --> ContributorsMapper: ContributorsMapper.read
+    ContributorsStore ->> ContributorsMapper: ContributorsMapper.read
     activate ContributorsMapper
-    ContributorsMapper --> DatabaseRepoContributor: read
+    ContributorsMapper -> DatabaseRepoContributor: read
     activate DatabaseRepoContributor
 
     ContributorsMapper <-- DatabaseRepoContributor: ContributorsResponse
@@ -58,14 +65,14 @@ else
 end
 
 loop пользователь выбирает, какие репозитории убрать из детального сравнения
-    U --> ReposMediator: ReposMediator.removeFromDetailedComparison
+    U -> ReposMediator: ReposMediator.removeFromDetailedComparison
     activate ReposMediator
     U <-- ReposMediator: ReposMediator.comparingitems
 end
 par удаление связанных с репозиторием данных со всех сервисов детального сравнения
-    ReposMediator --> LanguagesRepoService: LanguagesRepoService.remove
+    ReposMediator -> LanguagesRepoService: LanguagesRepoService.remove
     activate LanguagesRepoService
-    LanguagesRepoService --> LanguagesStore: LanguagesStore.deleteItem
+    LanguagesRepoService -> LanguagesStore: LanguagesStore.deleteItem
     activate LanguagesStore
 
     LanguagesRepoService <-- LanguagesStore: LanguagesStore.itemMap
@@ -74,9 +81,9 @@ par удаление связанных с репозиторием данных
     deactivate LanguagesRepoService
     U <-- ReposMediator: ReposMediator.services.languages.itemMap
 else
-    ReposMediator --> ContributorsRepoService: ContributorsRepoService.remove
+    ReposMediator -> ContributorsRepoService: ContributorsRepoService.remove
     activate ContributorsRepoService
-    ContributorsRepoService --> ContributorsStore: ContributorsStore.deleteItem
+    ContributorsRepoService -> ContributorsStore: ContributorsStore.deleteItem
     activate ContributorsStore
 
     ContributorsRepoService <-- ContributorsStore: ContributorsStore.itemMap
