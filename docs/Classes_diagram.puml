@@ -99,7 +99,7 @@
         +run(repo: Repo): void
     }
     TransactionScript <|-- LanguagesTS
-    LanguagesRepoService o--- LanguagesTS
+    LanguagesRepoService o---> LanguagesTS
 
     class ContributorsRepoService {
         +add(repo: Repo): void
@@ -113,7 +113,7 @@
         +run(repo: Repo): void
     }
     TransactionScript <|-- ContributorsTS
-    ContributorsRepoService o--- ContributorsTS
+    ContributorsRepoService o---> ContributorsTS
 
     class LanguagesStore {
         +getItemsFromApi(config: GetLanguagesRequestConfig): Promise<Languages>
