@@ -166,6 +166,7 @@
 
         <<Create>> +constructor()
         +read(config: GetContributorsRequestConfig): Promise<Contributor[]>
+        +create(config: CreateContributorsRequestConfig): Promise<Contributor>
     }
     ContributorsMapper --> DatabaseRepoContributor
 
