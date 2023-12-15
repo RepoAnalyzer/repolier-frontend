@@ -11,7 +11,7 @@ note right of ReposMediator
 end note
 
 loop пользователь выбирает, какие репозитории добавить к детальному сравнению
-    U -> ReposMediator: ReposMediator.addToDetailedComparison
+    U ->> ReposMediator: ReposMediator.addToDetailedComparison
     activate ReposMediator
     U <-- ReposMediator: ReposMediator.comparingitems
 end
@@ -65,7 +65,7 @@ else
 end
 
 loop пользователь выбирает, какие репозитории убрать из детального сравнения
-    U -> ReposMediator: ReposMediator.removeFromDetailedComparison
+    U ->> ReposMediator: ReposMediator.removeFromDetailedComparison
     activate ReposMediator
     U <-- ReposMediator: ReposMediator.comparingitems
 end
