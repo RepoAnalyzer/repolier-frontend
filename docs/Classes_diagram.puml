@@ -175,6 +175,8 @@
         +login: string
         +contributions: number
         +avatar_url: string
+        +read(ownerName: string, repoName: string): GetContributorsResponse
+        +create(contributor: Contributor): CreateContributorsResponse
     }
     DatabaseRepoContributor -left- DatabaseSearchRepo
 
@@ -203,6 +205,7 @@
     class DatabaseRepoLanguage {
         +name: string
         +usage: string
+        +read(ownerName: string, repoName: string): LanguagesResponse
     }
 
 @enduml
