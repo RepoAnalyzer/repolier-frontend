@@ -113,6 +113,12 @@
         +run(repo: Repo): void
     }
     TransactionScript <|-- ContributorsTS
+    class AddContributorTS {
+        <<Create>> +constructor()
+        +run(repo: Repo, contributor: Contributor): Repo
+    }
+    ReposMediator ----> AddContributorTS
+    TransactionScript <|-- AddContributorTS
     ContributorsRepoService o---> ContributorsTS
 
     class LanguagesStore {
@@ -129,10 +135,12 @@
     class ContributorsStore {
         +getItemsFromApi(config: GetContributorsRequestConfig): Promise<Contributors[]>
         +processPayload(payload: Languages): void
+        +create(config: CreateContributorsConfig): Promise<Contributor>
     }
 
     ContributorsTS ---> ContributorsStore
-
+    AddContributorTS ---> ContributorsStore
+    AddContributorTS ---> RepoMapper
 
     LanguagesStore --> LanguagesMapper
     class LanguagesMapper {
@@ -148,6 +156,7 @@
 
         <<Create>> +constructor()
         +read(searchTerm: string, sortBy: RequestSortBy): Promise<Repo[]>
+        +update({ repoName, ownerName, data }: UpdateRepoRequestConfig): Promise<Repo>
     }
     RepoMapper --> DatabaseSearchRepo
 
@@ -184,6 +193,7 @@
         +html_url: string
 
         +read(searchTerm: string, sortBy: string): RepoResponse[]
+        +update(repoName: string, ownerName: string, data: Repo): RepoResponse
     }
 
     LanguagesMapper --> DatabaseRepoLanguage

@@ -10,8 +10,9 @@ ContributorsMapper ->> DatabaseRepoContributor: DatabaseRepoContributor.create
 
 ContributorsMapper <-- DatabaseRepoContributor: ContributorResponse
 ContributorsStore <-- ContributorsMapper: Contributor
+AddContributorTS <-- ContributorsStore: Contributor
 
-ContributorsStore ->> RepoMapper: RepoMapper.update
+AddContributorTS ->> RepoMapper: RepoMapper.update
 RepoMapper ->> DatabaseSearchRepo: DatabaseSearchRepo.update
 RepoMapper <-- DatabaseSearchRepo: RepoResponse
 AddContributorTS <-- RepoMapper: Repo
