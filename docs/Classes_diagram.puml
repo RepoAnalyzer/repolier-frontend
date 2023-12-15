@@ -45,7 +45,7 @@
         либо с set, либо с get методом соответственно.
     end note
 
-    ' ReposMediator ..> RepoMapper
+    ' ReposMediator --> RepoMapper
 
 
     interface TransactionScript {
@@ -56,7 +56,7 @@
         +add(repo: Repo): void
         +remove(repoFullName: string): void
     }
-    ReposMediator .> RepoService
+    ReposMediator -> RepoService
 
     ' class SetSearchParamTS {
     '     +defaultSearchParam: string
@@ -80,7 +80,7 @@
     }
 
     RepoService <|-- LanguagesRepoService
-    ReposMediator ..> LanguagesRepoService
+    ReposMediator --> LanguagesRepoService
 
     class SearchTS {
         +_isFetching: boolean
@@ -91,7 +91,7 @@
         <<Create>> +constructor()
         +run(searchTerm: string, requestSortBy: RequestSortBy): Promise<Repo[]>
     }
-    ReposMediator ....> SearchTS
+    ReposMediator ----> SearchTS
     TransactionScript <|-- SearchTS
 
     class LanguagesTS {
@@ -105,7 +105,7 @@
         +add(repo: Repo): void
         +remove(repoFullName: string): void
     }
-    ReposMediator ..> ContributorsRepoService
+    ReposMediator --> ContributorsRepoService
     RepoService <|-- ContributorsRepoService
 
     class ContributorsTS {
@@ -123,7 +123,7 @@
     ' StoreWithFetch <|- LanguagesStore
     ' StoreWithFetch <|- ContributorsStore
 
-    LanguagesTS ...> LanguagesStore
+    LanguagesTS ---> LanguagesStore
 
 
     class ContributorsStore {
@@ -131,10 +131,10 @@
         +processPayload(payload: Languages): void
     }
 
-    ContributorsTS ...> ContributorsStore
+    ContributorsTS ---> ContributorsStore
 
 
-    LanguagesStore ..> LanguagesMapper
+    LanguagesStore --> LanguagesMapper
     class LanguagesMapper {
         -GITHUB_TOKEN: string
 
@@ -142,23 +142,23 @@
         +read(config: GetLanguagesRequestConfig): Promise<Languages>
     }
 
-    SearchTS ...> RepoMapper
+    SearchTS ---> RepoMapper
     class RepoMapper {
         -GITHUB_TOKEN: string
 
         <<Create>> +constructor()
         +read(searchTerm: string, sortBy: RequestSortBy): Promise<Repo[]>
     }
-    RepoMapper ..> DatabaseSearchRepo
+    RepoMapper --> DatabaseSearchRepo
 
-    ContributorsStore ..> ContributorsMapper
+    ContributorsStore --> ContributorsMapper
     class ContributorsMapper {
         -GITHUB_TOKEN: string
 
         <<Create>> +constructor()
         +read(config: GetContributorsRequestConfig): Promise<Contributor[]>
     }
-    ContributorsMapper ..> DatabaseRepoContributor
+    ContributorsMapper --> DatabaseRepoContributor
 
     class DatabaseRepoContributor {
         +id: number
@@ -186,7 +186,7 @@
         +read(searchTerm: string, sortBy: string): RepoResponse[]
     }
 
-    LanguagesMapper ..> DatabaseRepoLanguage
+    LanguagesMapper --> DatabaseRepoLanguage
     DatabaseRepoLanguage - DatabaseSearchRepo
 
     class DatabaseRepoLanguage {
