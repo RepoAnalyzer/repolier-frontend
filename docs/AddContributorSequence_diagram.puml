@@ -1,0 +1,19 @@
+@startuml
+autonumber
+' Search
+participant Пользователь as U
+
+U ->> AddContributorTS: AddContributorTS.run
+AddContributorTS ->> ContributorsStore: ContributorsStore.create
+ContributorsStore ->> ContributorsMapper: ContributorsMapper.create
+ContributorsMapper ->> DatabaseRepoContributor: DatabaseRepoContributor.create
+
+ContributorsMapper <-- DatabaseRepoContributor: ContributorResponse
+ContributorsStore <-- ContributorsMapper: Contributor
+
+ContributorsStore ->> RepoMapper: RepoMapper.update
+RepoMapper ->> DatabaseSearchRepo: DatabaseSearchRepo.update
+RepoMapper <-- DatabaseSearchRepo: RepoResponse
+AddContributorTS <-- RepoMapper: Repo
+U <-- AddContributorTS: Обновлённые данные
+@enduml
