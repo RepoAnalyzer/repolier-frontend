@@ -2,20 +2,28 @@
 autonumber
 ' Search
 participant Пользователь as U
+participant ReposMediator
+note right of ReposMediator
+      ReposMediator является наблюдаемым (observable),
+    при изменении состояния посылает сигналы наблюдателям (observers subjects).
+      Тонкости паттерна observer на данной диаграмме не помечались,
+    так как они полностью инкапсулированы во внешней библиотеке.
+end note
+
 
 loop пользователь набирает запрос / выбирает параметры
-    U --> ReposMediator: ReposMediator.searchTerm
+    U -> ReposMediator: ReposMediator.searchTerm
     activate ReposMediator
-    U --> ReposMediator: ReposMediator.sortBy
-    ReposMediator --> SearchTS: SearchTS.run
+    U -> ReposMediator: ReposMediator.sortBy
+    ReposMediator ->> SearchTS: SearchTS.run
     activate SearchTS
     ReposMediator <-- SearchTS: SearchTS.isFetching = true
     U <-- ReposMediator: ReposMediator.isFetching = true
 end
 
-SearchTS --> RepoMapper: RepoMapper.read
+SearchTS -> RepoMapper: RepoMapper.read
 activate RepoMapper
-RepoMapper --> DatabaseSearchRepo: read
+RepoMapper -> DatabaseSearchRepo: read
 activate DatabaseSearchRepo
 
 alt успешно
@@ -27,7 +35,7 @@ alt успешно
     alt данные по запросу есть
         U <-- ReposMediator: RepoStore.items
 
-        U --> ReposMediator : ReposMediator.requestSortBy
+        U -> ReposMediator : ReposMediator.requestSortBy
         U <-- ReposMediator : ReposMediator.items
     else данных нет
         U <-- ReposMediator: RepoStore.nothingFound
