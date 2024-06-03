@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import { observer } from 'mobx-react-lite';
 import { searchTS } from 'scripts/search.script';
 
-import { RequestSortBy } from 'components/repos/repo.mapper';
+import { RequestSortBy } from 'components/repos/repo.mapper.types';
 import { reposMediator } from 'components/repos/repos.mediator';
 
 import { requestSortOptions, SEARCH_DEBOUNCE_TIMEOUT, sortOptions } from './search-bar.constants';
