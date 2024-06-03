@@ -25,4 +25,10 @@ jobs:
             feat
             fix
             chore
+            test
+            refactor
+            build
+            hotfix
+            style
+            doc
           requireScope: false
