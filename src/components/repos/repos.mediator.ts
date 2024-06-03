@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { searchTS } from 'scripts/search.script';
 
-import { RequestSortBy } from 'components/repos/repo.mapper';
+import { RequestSortBy } from 'components/repos/repo.mapper.types';
 import { getRepoFullName } from 'utils/get-repo-full-name';
 
 import { contributorsRepoService } from './contributors.service';
