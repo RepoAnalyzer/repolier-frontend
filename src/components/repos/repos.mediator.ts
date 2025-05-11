@@ -8,8 +8,11 @@ import { contributorsRepoService } from './contributors.service';
 import { getScore } from './getScore';
 import { languagesRepoService } from './languages.service';
 import { Repo, SortBy } from './repos.types';
+import { REPOS_MAP } from './__mocks__';
 
 export type LanguagesMap = Map<string, number>;
+
+const IS_MOCK = true;
 
 class ReposMediator {
     _searchTerm = '';
@@ -20,7 +23,7 @@ class ReposMediator {
     _requestSortBy: RequestSortBy = 'stars';
     _sortBy: SortBy = 'stars';
 
-    public itemsMap: Map<string, Repo> = new Map();
+    public itemsMap: Map<string, Repo> = IS_MOCK ? REPOS_MAP : new Map<string, Repo>();
 
     _comparingItems: string[] = [];
 

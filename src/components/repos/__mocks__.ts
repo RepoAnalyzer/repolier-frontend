@@ -1,3 +1,5 @@
+import { getRepoFullName } from 'utils/get-repo-full-name';
+
 import { RepoResponse } from './repo.mapper.types';
 import { Repo } from './repos.types';
 
@@ -99,3 +101,5 @@ export const REPOS: Repo[] = [
         open_issues: 12,
     },
 ];
+
+export const REPOS_MAP: Map<string, Repo> = new Map(REPOS.map((repo => [getRepoFullName(repo), repo])))
