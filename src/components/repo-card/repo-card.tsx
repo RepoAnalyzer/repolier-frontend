@@ -1,4 +1,5 @@
 import React, { ChangeEvent, memo } from 'react';
+import { Link } from 'react-router';
 import { semanticPalette } from 'assets/palette/palette';
 import styled from 'styled-components';
 
@@ -99,6 +100,8 @@ export const DescriptionStyled = styled(Description)`
 export const RepoCard = memo((props: RepoCardProps) => {
     const { repo } = props;
 
+    const repoFullName = getRepoFullName(repo);
+
     return (
         <RepoCardStyled>
             <Header>
@@ -121,13 +124,15 @@ export const RepoCard = memo((props: RepoCardProps) => {
             </Stats>
             <Footer>
                 <div>
-                    <input type="checkbox" id={getRepoFullName(repo)} name={getRepoFullName(repo)} onChange={props.onRepoDetailedComparisonCheck} />
-                    <label htmlFor={getRepoFullName(repo)}>Compare</label>
+                    <input type="checkbox" id={repoFullName} name={repoFullName} onChange={props.onRepoDetailedComparisonCheck} />
+                    <label htmlFor={repoFullName}>Compare</label>
                 </div>
-                <Score>
-                    Score:
-                    <H2>{(props.score * 100).toFixed(2)}</H2>
-                </Score>
+                <Link to={repoFullName}>
+                    <Score>
+                        Score:
+                        <H2>{(props.score * 100).toFixed(2)}</H2>
+                    </Score>
+                </Link>
                 <ComparisonButton
                     preset="remove"
                     onClick={() => props.onRemoveFromComparison(repo)}

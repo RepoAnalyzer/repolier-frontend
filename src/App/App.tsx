@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiUpArrow } from 'react-icons/bi';
 import { GiPlantRoots } from 'react-icons/gi';
 import { GoPin } from 'react-icons/go';
+import { BrowserRouter, Route, Routes, useParams } from 'react-router';
 import { palette, semanticPalette } from 'assets/palette/palette';
 import { observer } from 'mobx-react-lite';
+import { Octokit } from 'octokit';
 import { styled } from 'styled-components';
 
 import { ComparingInfo } from 'components/comparing-info/comparing-info';
@@ -148,32 +150,99 @@ const Greeting = () => {
     );
 };
 
-export const App = observer(() => {
+const ReposPage = observer(() => (
+    <>
+        <RepoCards>
+            {reposMediator.items.length < 1 ? (
+                <Greeting />
+            ) : (
+                reposMediator.items.map((repo) => (
+                    <RepoCard
+                        key={repo.name}
+                        repo={repo}
+                        score={reposMediator.getRepoScore(getRepoFullName(repo))}
+                        onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
+                        onRepoDetailedComparisonCheck={(e) =>
+                            reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
+                        }
+                    />
+                ))
+            )}
+        </RepoCards>
+        <ComparingInfo />
+    </>
+))
+
+// Octokit.js
+// https://github.com/octokit/core.js#readme
+const octokit = new Octokit({
+    auth: process.env.REACT_APP_GITHUB_TOKEN,
+})
+
+const RepoPage = observer(() => {
+    const params = useParams()
+
+    console.log({ params })
+
+    const { ownerName, repoName } = params
+
+    if (!ownerName || !repoName) {
+        return null
+    }
+
+    const repo = reposMediator.itemsMap.get(getRepoFullName({ owner: ownerName, name: repoName }));
+
+    console.log({ repo })
+
+    if (!repo) {
+        return null
+    }
+
+    useEffect(() => {
+        octokit.request('GET /repos/{owner}/{repo}/pulls', {
+            owner: repo.owner,
+            repo: repo.name,
+            headers: {
+                // Last version as of 2025-05-11.
+                // https://docs.github.com/en/rest/about-the-rest-api/api-versions
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
+        }).then((response: unknown) => {
+            console.log(response)
+        })
+    }, [repo.name, repo.owner])
+
+    return (<>
+
+        <RepoCard
+            key={repo.name}
+            repo={repo}
+            score={reposMediator.getRepoScore(getRepoFullName(repo))}
+            onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
+            onRepoDetailedComparisonCheck={(e) =>
+                reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
+            }
+        />
+    </>
+    )
+})
+
+export const App = () => {
     return (
         <AppStyled>
             <Header>
                 <SearchBarStyled />
             </Header>
             <Main>
-                <RepoCards>
-                    {reposMediator.items.length < 1 ? (
-                        <Greeting />
-                    ) : (
-                        reposMediator.items.map((repo) => (
-                            <RepoCard
-                                key={repo.name}
-                                repo={repo}
-                                score={reposMediator.getRepoScore(getRepoFullName(repo))}
-                                onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
-                                onRepoDetailedComparisonCheck={(e) =>
-                                    reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
-                                }
-                            />
-                        ))
-                    )}
-                </RepoCards>
-                <ComparingInfo />
+                <BrowserRouter>
+                    <Routes>
+                        <Route index element={<ReposPage />} />
+                        <Route path=":ownerName" element={<RepoPage />}>
+                            <Route path=":repoName" element={<RepoPage />} />
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
             </Main>
         </AppStyled>
     );
-});
+};
