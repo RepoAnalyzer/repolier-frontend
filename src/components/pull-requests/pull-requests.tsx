@@ -1,5 +1,4 @@
 import React, { ChangeEvent, memo } from 'react';
-import { Link } from 'react-router';
 import { Accordion, AccordionItem } from '@szhsin/react-accordion';
 import { RepoPullRequest, TAuthorAssociation } from 'api/pull-requests.mapper.types';
 import { semanticPalette } from 'assets/palette/palette';
@@ -7,11 +6,11 @@ import styled from 'styled-components';
 
 import { ContributorCard } from 'components/comparing-info/contributors-block/contributors-card';
 import { Description } from 'components/description';
-import { RepoLink } from 'components/repo-link';
 import { ComparisonButton } from 'components/search-bar/search-result.style';
 import { CreatedAt, UpdatedAt } from 'components/stats/dates';
-import { Ol } from 'components/ui-kit/atomics';
 import { GHMarkdown } from 'components/ui-kit/markdown';
+import { RepoPullRequestScore } from './pull-request-score';
+import { useGetPullRequestScore } from './use-get-pull-request-score.hook';
 
 export type PullRequestsProps = {
     pullRequests: RepoPullRequest[]
@@ -108,15 +107,6 @@ export const Footer = styled.footer`
     align-items: center;
 `
 
-export const Score = styled.span`
-    width: 40px;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 0 0 16px;
-`
-
 export const H2 = styled.h2`
     flex-grow: 1;
     font-size: 1.5rem;
@@ -141,8 +131,10 @@ const authorAssociationMap: Record<TAuthorAssociation, string | undefined> = {
 export const PullRequests = (props: PullRequestsProps) => {
     const { pullRequests } = props;
 
+    const getPullRequestScore = useGetPullRequestScore(pullRequests);
+
     return (
-        <PullRequestsStyled allowMultiple transition transitionTimeout={TRANSITION_TIMEOUT}>{pullRequests.map((pullRequest) => (
+        <PullRequestsStyled allowMultiple transition transitionTimeout={TRANSITION_TIMEOUT}>{pullRequests.map((pullRequest, index) => (
             <PullRequestStyled key={pullRequest.id} header={
                 <PullRequestHeader>
                     <div>
@@ -150,6 +142,7 @@ export const PullRequests = (props: PullRequestsProps) => {
                         {pullRequest.author && (<ContributorCard contributor={pullRequest.author} />)}
                     </div>
                     <H2>{pullRequest.title}</H2>
+                    <RepoPullRequestScore score={getPullRequestScore(pullRequest, index)} />
                 </PullRequestHeader>
             }>
                 <PullRequestBody>
