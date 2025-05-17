@@ -18,11 +18,25 @@ export type ContributorCardProps = {
 export const ContributorCard = (props: ContributorCardProps) => {
     const { contributor } = props;
 
+    const nameEl = <div>{contributor.name}</div>
+
+    const contributionsEl = <div>{contributor.contributions}</div>
+
+    if (!contributor.contributions) {
+        return (
+            <ContributorCardStyled>
+                <Avatar src={contributor.avatar} />
+                {nameEl}
+            </ContributorCardStyled>
+        );
+
+    }
+
     return (
         <ContributorCardStyled>
-            <div>{contributor.name}</div>
+            {nameEl}
             <Avatar src={contributor.avatar} />
-            {contributor.contributions && (<div>{contributor.contributions}</div>)}
+            {contributionsEl}
         </ContributorCardStyled>
     );
 };
