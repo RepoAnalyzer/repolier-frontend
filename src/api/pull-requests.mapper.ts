@@ -3,8 +3,8 @@ import { action, makeObservable } from 'mobx';
 import { getRepoPullRequests } from 'components/pull-requests/__mocks__';
 
 import { BaseGitHubMapper } from './base/base-github-mapper';
-import { GetRepoPullRequestsConfig } from './pull-requests.mapper.types';
-import { RepoPullRequest, TAuthorAssociation, TPullRequestsState } from './pull-requests.types';
+import { RepoPullRequest, TAuthorAssociation, TPullRequestsState } from './pull-requests.mapper.types';
+import { GetRepoPullRequestsConfig } from './pull-requests.types';
 
 export const ITEMS_PER_PAGE = 5;
 

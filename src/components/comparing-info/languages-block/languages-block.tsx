@@ -18,7 +18,7 @@ export const LanguagesBlock = observer(() => {
     if (reposMediator.comparingItems.length < 1) {
         return null;
     }
-    const languagesMap = reposMediator.services.languages.itemMap;
+    const languagesMap = reposMediator.services.analytics.languages.itemMap;
 
     if (languagesMap.size < 1) {
         return <h2>Languages</h2>;

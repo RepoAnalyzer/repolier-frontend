@@ -1,46 +1,7 @@
-/** UTC Date-like string such as "2025-05-07T14:23:53Z" */
-type TDate = string;
-/** Url-like string. */
-type THref = string;
-export type TAuthorAssociation = 'OWNER' | 'CONTRIBUTOR' | 'NONE';
-export type TPullRequestsState = 'open';
+import { Endpoints } from "@octokit/types";
 
-export type RepoPullRequest = {
-    id: number;
-    number: number;
-    state: TPullRequestsState | null;
-    title: string;
-    body: string | null;
-    draft: boolean;
-    createdAt: TDate | null,
-    updatedAt: TDate | null,
-    closedAt: TDate | null,
-    mergedAt: TDate | null,
-    _links: {
-        self: {
-            href: THref;
-        },
-        html: {
-            href: THref;
-        },
-        issue: {
-            href: THref;
-        },
-        comments: {
-            href: THref;
-        },
-        review_comments: {
-            href: THref;
-        },
-        review_comment: {
-            href: THref;
-        },
-        commits: {
-            href: THref;
-        },
-        statuses: {
-            href: THref;
-        }
-    },
-    authorAssociation: TAuthorAssociation;
-}
+import { GetRepoRelatedInfoRequestConfig } from './base/base-github.types';
+
+export type GetRepoPullRequestsResponse = Endpoints['GET /repos/{owner}/{repo}/pulls']['response']
+export type GetRepoPullRequestsConfig = GetRepoRelatedInfoRequestConfig;
+

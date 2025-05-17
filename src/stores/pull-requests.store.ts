@@ -1,7 +1,6 @@
-
 import { pullRequestsMapper } from 'api/pull-requests.mapper';
-import { GetRepoPullRequestsConfig } from 'api/pull-requests.mapper.types';
-import { RepoPullRequest } from 'api/pull-requests.types';
+import { RepoPullRequest } from 'api/pull-requests.mapper.types';
+import { GetRepoPullRequestsConfig } from 'api/pull-requests.types';
 import { StoreWithFetch } from 'stores/store-with-fetch';
 
 export class PullRequestsStore extends StoreWithFetch<RepoPullRequest, GetRepoPullRequestsConfig> {
@@ -14,5 +13,5 @@ export class PullRequestsStore extends StoreWithFetch<RepoPullRequest, GetRepoPu
     }
 }
 
-export const contributorsStore = new PullRequestsStore();
+export const pullRequestsStore = new PullRequestsStore();
 
