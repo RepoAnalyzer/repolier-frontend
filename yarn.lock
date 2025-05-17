@@ -3840,6 +3840,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@szhsin/react-accordion@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@szhsin/react-accordion@npm:1.4.1"
+  dependencies:
+    react-transition-state: ^2.3.1
+  peerDependencies:
+    react: ^16.14 || ^17.0 || ^18.0 || ^19.0
+    react-dom: ^16.14 || ^17.0 || ^18.0 || ^19.0
+  checksum: 9d2cfeb31f74591ffb2d66c396bd1ebd6565fe4f1f1b50d87e347c73449ab47eb577b82553ffe92f58974825ee52cbd5177b5cf11ff3dedbad2af3c008a0de00
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^8.5.0":
   version: 8.20.1
   resolution: "@testing-library/dom@npm:8.20.1"
@@ -6517,6 +6529,7 @@ __metadata:
     "@octokit/rest": ^21.1.1
     "@octokit/types": ^14.0.0
     "@reduxjs/toolkit": ^1.8.5
+    "@szhsin/react-accordion": ^1.4.1
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
@@ -6555,7 +6568,6 @@ __metadata:
     react-outside-click-handler: ^1.3.0
     react-router: ^7.6.0
     react-scripts: ^5.0.1
-    react-simple-keyboard: ^3.4.220
     remark-gfm: ^4.0.1
     styled-components: ^6.0.0-rc.1
     styled-system: ^5.1.5
@@ -14976,13 +14988,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-simple-keyboard@npm:^3.4.220":
-  version: 3.7.55
-  resolution: "react-simple-keyboard@npm:3.7.55"
+"react-transition-state@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "react-transition-state@npm:2.3.1"
   peerDependencies:
-    react: ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: 8f81f353a0be4ecb5d57aac3466f40fc28e0891a0bedb3e282add5418120cfe31cc72815da63c15134544921a27c5a5f5ee66a0425a44c360d201bb709fcc0e7
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: c42ac14b7b1dc062e1c75915bf054efd42814bcd3c9ed1ea041e21cefd8d0d19e30125374ec2deaafbf50d47d2f51a05db9b8de6659068df507065e694f08a2d
   languageName: node
   linkType: hard
 
