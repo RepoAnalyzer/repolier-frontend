@@ -16,6 +16,8 @@ export const semanticPalette = {
     secondary: palette.gray,
 
     hover: palette.blueGray,
+    // Darker variation of a hover.
+    activated: 'hsl(214, 20%, 90%)',
 
     vague: 'hsla(0, 0%, 100%, .4)',
 

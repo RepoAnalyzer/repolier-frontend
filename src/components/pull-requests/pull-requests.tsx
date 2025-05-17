@@ -1,5 +1,6 @@
 import React, { ChangeEvent, memo } from 'react';
 import { Link } from 'react-router';
+import { Accordion, AccordionItem } from '@szhsin/react-accordion';
 import { RepoPullRequest, TAuthorAssociation } from 'api/pull-requests.mapper.types';
 import { semanticPalette } from 'assets/palette/palette';
 import styled from 'styled-components';
@@ -18,12 +19,13 @@ export type PullRequestsProps = {
 
 const BLOCK_PADDING = `padding: 8px 16px;`;
 const BLOCK_BORDER = `border-bottom: 2px solid ${semanticPalette.emphasizing};`;
+const TRANSITION_TIMEOUT = 400
 
-export const PullRequestStyled = styled.li`
+export const PullRequestStyled = styled(AccordionItem)`
     border-radius: 16px;
     border: 2px solid ${semanticPalette.emphasizing};
     background-color: ${semanticPalette.primary};
-    transition: border-color 1s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
 
     &:hover {
         border-color: ${semanticPalette.contrasting2};
@@ -32,11 +34,41 @@ export const PullRequestStyled = styled.li`
     &:hover ${ComparisonButton} {
         opacity: 1;
     }
+
+    .szh-accordion__item {
+        width: 100%;
+
+        &-btn {
+            border-radius: 16px;
+            width: 100%;
+            background-color: transparent;
+            border: none;
+
+            &:hover {
+              background-color: ${semanticPalette.hover};
+            }
+
+            transition: border-radius ${TRANSITION_TIMEOUT}ms ease-in-out;
+        }
+
+        &-content {
+            transition: height ${TRANSITION_TIMEOUT}ms cubic-bezier(0, 0, 0, 1);
+        }
+    }
+
+    &.szh-accordion__item--expanded {
+        .szh-accordion__item-btn {
+            border-radius: 16px 16px 0 0;
+            background-color: ${semanticPalette.activated};
+            transition: border-radius 50ms ease-in-out;
+        }
 `
 
-export const PullRequestsStyled = styled(Ol)`
+export const PullRequestsStyled = styled(Accordion)`
+    margin-top: 24px;
+
     ${PullRequestStyled} {
-        margin-bottom: 16px;
+        margin-bottom: 8px;
     }
 `
 
@@ -48,6 +80,7 @@ export const PullRequestHeader = styled.header`
 `
 
 export const PullRequestBody = styled.body`
+    border-top: 2px solid ${semanticPalette.emphasizing};
     ${BLOCK_PADDING}
 `
 
@@ -76,15 +109,19 @@ export const Footer = styled.footer`
 `
 
 export const Score = styled.span`
-    width: 90px;
+    width: 40px;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0 0 0 16px;
 `
 
 export const H2 = styled.h2`
     flex-grow: 1;
-    margin: 0 0 0 12px;
+    font-size: 1.5rem;
+    text-align: left;
+    margin: 0 0 0 16px;
 `
 
 export const DescriptionStyled = styled(Description)`
@@ -105,8 +142,8 @@ export const PullRequests = (props: PullRequestsProps) => {
     const { pullRequests } = props;
 
     return (
-        <PullRequestsStyled>{pullRequests.map((pullRequest) => (
-            <PullRequestStyled key={pullRequest.id}>
+        <PullRequestsStyled allowMultiple transition transitionTimeout={TRANSITION_TIMEOUT}>{pullRequests.map((pullRequest) => (
+            <PullRequestStyled key={pullRequest.id} header={
                 <PullRequestHeader>
                     <div>
                         <span>{authorAssociationMap[pullRequest.authorAssociation]}</span>
@@ -114,6 +151,7 @@ export const PullRequests = (props: PullRequestsProps) => {
                     </div>
                     <H2>{pullRequest.title}</H2>
                 </PullRequestHeader>
+            }>
                 <PullRequestBody>
                     <GHMarkdown>{pullRequest.body}</GHMarkdown>
                 </PullRequestBody>
