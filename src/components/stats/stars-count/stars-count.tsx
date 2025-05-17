@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { AiOutlineStar } from 'react-icons/ai'
+import { styled } from 'styled-components';
 
 
 export const StarsCountStyled = styled.div`

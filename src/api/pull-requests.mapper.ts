@@ -3,9 +3,9 @@ import { action, makeObservable } from 'mobx';
 import { getRepoPullRequests } from 'components/pull-requests/__mocks__';
 
 import { BaseGitHubMapper } from './base/base-github-mapper';
+import { contributorsMapper } from './contributors.mapper';
 import { RepoPullRequest, TAuthorAssociation, TPullRequestsState } from './pull-requests.mapper.types';
 import { GetRepoPullRequestsConfig } from './pull-requests.types';
-import { ContributorResponse, contributorsMapper } from './contributors.mapper';
 
 export const ITEMS_PER_PAGE = 5;
 
@@ -29,8 +29,6 @@ export class PullRequestsMapper extends BaseGitHubMapper {
                 'X-GitHub-Api-Version': '2022-11-28'
             }
         }))
-
-        console.log({ response })
 
         return response.data.map((item) => ({
             id: item.id,

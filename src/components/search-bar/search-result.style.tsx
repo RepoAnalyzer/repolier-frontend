@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { semanticPalette } from "assets/palette/palette";
+import { styled } from "styled-components";
 
 const ANIMATION = '0.2s ease-in-out';
 

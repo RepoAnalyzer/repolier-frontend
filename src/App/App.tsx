@@ -1,19 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { BiUpArrow } from 'react-icons/bi';
 import { GiPlantRoots } from 'react-icons/gi';
 import { GoPin } from 'react-icons/go';
 import { BrowserRouter, Route, Routes, useParams } from 'react-router';
 import { palette, semanticPalette } from 'assets/palette/palette';
 import { observer } from 'mobx-react-lite';
-import { PullRequestsStore } from 'stores/pull-requests.store';
 import { styled } from 'styled-components';
 
 import { ComparingInfo } from 'components/comparing-info/comparing-info';
+import { PullRequests } from 'components/pull-requests/pull-requests';
 import { RepoCard } from 'components/repo-card/repo-card';
 import { reposMediator } from 'components/repos/repos.mediator';
 import { SearchBar } from 'components/search-bar/search-bar';
 import { getRepoFullName } from 'utils/get-repo-full-name';
-import { PullRequests } from 'components/pull-requests/pull-requests';
 
 export const Button = styled.button`
     color: ${semanticPalette.contrasting};

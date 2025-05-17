@@ -1,7 +1,7 @@
 import React from 'react';
 import { BsCircleFill } from 'react-icons/bs';
 import { semanticPalette } from 'assets/palette/palette';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 export const LanguageStyled = styled.div`
     display: flex;

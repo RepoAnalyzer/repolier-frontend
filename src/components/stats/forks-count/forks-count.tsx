@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { BiGitRepoForked } from 'react-icons/bi'
+import { styled } from 'styled-components';
 
 
 export const ForksCountStyled = styled.div`

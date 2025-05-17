@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from "react"
 import { RepoPullRequest, TRepoPullRequestScore } from "api/pull-requests.mapper.types"
 
-import { prepareScoreFunction } from "./get-pull-request-score.util"
 import { randomInRange } from "utils/random"
+
+import { prepareScoreFunction } from "./get-pull-request-score.util"
 
 export const useGetPullRequestScore = (pullRequests: RepoPullRequest[]) => {
     const getGeneralScore = useMemo(() => prepareScoreFunction(pullRequests), [pullRequests])

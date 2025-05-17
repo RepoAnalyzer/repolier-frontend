@@ -1,7 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import { AiTwotoneCheckCircle } from 'react-icons/ai';
 import { semanticPalette } from 'assets/palette/palette';
+import { styled } from 'styled-components';
 
 export const LanguageStyled = styled.div`
     display: flex;

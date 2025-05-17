@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { semanticPalette } from "assets/palette/palette";
+import { styled } from "styled-components";
 import { margin, MarginProps } from 'styled-system';
 
 export const Link = styled.a<MarginProps>`
