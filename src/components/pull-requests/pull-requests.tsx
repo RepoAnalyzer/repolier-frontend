@@ -1,14 +1,14 @@
-import React, { ChangeEvent, memo } from 'react';
+import React from 'react';
 import { Accordion, AccordionItem } from '@szhsin/react-accordion';
 import { RepoPullRequest, TAuthorAssociation } from 'api/pull-requests.mapper.types';
 import { semanticPalette } from 'assets/palette/palette';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { ContributorCard } from 'components/comparing-info/contributors-block/contributors-card';
 import { Description } from 'components/description';
 import { ComparisonButton } from 'components/search-bar/search-result.style';
-import { CreatedAt, UpdatedAt } from 'components/stats/dates';
 import { GHMarkdown } from 'components/ui-kit/markdown';
+
 import { RepoPullRequestScore } from './pull-request-score';
 import { useGetPullRequestScore } from './use-get-pull-request-score.hook';
 

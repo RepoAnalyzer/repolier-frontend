@@ -1,7 +1,7 @@
 import React, { ChangeEvent, memo } from 'react';
 import { Link } from 'react-router';
 import { semanticPalette } from 'assets/palette/palette';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { Description } from 'components/description';
 import { RepoLink } from 'components/repo-link';
@@ -12,8 +12,8 @@ import { ForksCount } from 'components/stats/forks-count';
 import { IssuesCount } from 'components/stats/issues-count';
 import { Language } from 'components/stats/language';
 import { StarsCount } from 'components/stats/stars-count';
-import { getRepoFullName } from 'utils/get-repo-full-name';
 import { formatScore } from 'utils/format-score';
+import { getRepoFullName } from 'utils/get-repo-full-name';
 
 export type RepoCardProps = {
     repo: Repo;

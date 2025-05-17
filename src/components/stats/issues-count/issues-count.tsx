@@ -1,6 +1,6 @@
 import React from 'react';
 import { VscIssues } from 'react-icons/vsc'
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 
 export const IssuesCountStyled = styled.div`

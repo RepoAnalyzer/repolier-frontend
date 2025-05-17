@@ -6,7 +6,7 @@ import { GiBodyHeight, GiEmptyHourglass, GiRadioactive } from 'react-icons/gi';
 import { useFloating, useHover, useInteractions } from '@floating-ui/react';
 import { TRepoPullRequestScore } from 'api/pull-requests.mapper.types';
 import { semanticPalette } from 'assets/palette/palette';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { formatScore } from 'utils/format-score';
 
@@ -33,6 +33,7 @@ export const ScoreStyled = styled.div`
 
 export const GeneralScore = styled(ScoreStyled)`
     margin: 0 0 0 16px;
+    padding: 8px;
 
     &:hover {
         color: ${semanticPalette.contrasting2};
