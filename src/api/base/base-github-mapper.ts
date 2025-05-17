@@ -1,8 +1,8 @@
-import { Octokit } from 'octokit';
+import { Octokit } from '@octokit/rest';
 
 export class BaseGitHubMapper {
     private GITHUB_TOKEN?: string = undefined;
-    protected octokit?: Octokit = undefined;
+    protected octokit: Octokit;
 
     constructor() {
         this.GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;

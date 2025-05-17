@@ -1,12 +1,12 @@
 
+import { pullRequestsMapper } from 'api/pull-requests.mapper';
+import { GetRepoPullRequestsConfig } from 'api/pull-requests.mapper.types';
+import { RepoPullRequest } from 'api/pull-requests.types';
 import { StoreWithFetch } from 'stores/store-with-fetch';
-
-import { GetRepoPullRequestsConfig } from 'components/pull-requests/pull-requests.mapper.types';
-import { RepoPullRequest } from 'components/pull-requests/pull-requests.types';
 
 export class PullRequestsStore extends StoreWithFetch<RepoPullRequest, GetRepoPullRequestsConfig> {
     async getItemsFromApi(config: GetRepoPullRequestsConfig) {
-        return repoPullRequestsMapper.read(config);
+        return pullRequestsMapper.read(config);
     }
 
     processPayload(payload: RepoPullRequest[]) {

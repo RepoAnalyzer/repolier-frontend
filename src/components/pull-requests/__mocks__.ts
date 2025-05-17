@@ -9013,4 +9013,4 @@ export const PULL_REQUESTS_RESPONSE: GetRepoPullRequestsResponse = {
     ]
 }
 
-
+export const getRepoPullRequests = () => new Promise<GetRepoPullRequestsResponse>((resolve) => resolve(PULL_REQUESTS_RESPONSE))

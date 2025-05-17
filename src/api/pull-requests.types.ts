@@ -1,3 +1,46 @@
-import { RepoPullRequestResponse } from "./pull-requests.mapper.types";
+/** UTC Date-like string such as "2025-05-07T14:23:53Z" */
+type TDate = string;
+/** Url-like string. */
+type THref = string;
+export type TAuthorAssociation = 'OWNER' | 'CONTRIBUTOR' | 'NONE';
+export type TPullRequestsState = 'open';
 
-export type RepoPullRequest = RepoPullRequestResponse;
+export type RepoPullRequest = {
+    id: number;
+    number: number;
+    state: TPullRequestsState | null;
+    title: string;
+    body: string | null;
+    draft: boolean;
+    createdAt: TDate | null,
+    updatedAt: TDate | null,
+    closedAt: TDate | null,
+    mergedAt: TDate | null,
+    _links: {
+        self: {
+            href: THref;
+        },
+        html: {
+            href: THref;
+        },
+        issue: {
+            href: THref;
+        },
+        comments: {
+            href: THref;
+        },
+        review_comments: {
+            href: THref;
+        },
+        review_comment: {
+            href: THref;
+        },
+        commits: {
+            href: THref;
+        },
+        statuses: {
+            href: THref;
+        }
+    },
+    authorAssociation: TAuthorAssociation;
+}
