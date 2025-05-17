@@ -1,5 +1,5 @@
 import { palette, semanticPalette } from 'assets/palette/palette';
-import { Ol } from 'components/atomics/atomics';
+import { Ol } from 'components/ui-kit/atomics';
 import styled from 'styled-components';
 
 export type InputProps = {

@@ -4,12 +4,13 @@ import { RepoPullRequest, TAuthorAssociation } from 'api/pull-requests.mapper.ty
 import { semanticPalette } from 'assets/palette/palette';
 import styled from 'styled-components';
 
-import { Ol } from 'components/atomics/atomics';
 import { ContributorCard } from 'components/comparing-info/contributors-block/contributors-card';
 import { Description } from 'components/description';
 import { RepoLink } from 'components/repo-link';
 import { ComparisonButton } from 'components/search-bar/search-result.style';
 import { CreatedAt, UpdatedAt } from 'components/stats/dates';
+import { Ol } from 'components/ui-kit/atomics';
+import { GHMarkdown } from 'components/ui-kit/markdown';
 
 export type PullRequestsProps = {
     pullRequests: RepoPullRequest[]
@@ -114,7 +115,7 @@ export const PullRequests = (props: PullRequestsProps) => {
                     <H2>{pullRequest.title}</H2>
                 </PullRequestHeader>
                 <PullRequestBody>
-                    <p>{pullRequest.body}</p>
+                    <GHMarkdown>{pullRequest.body}</GHMarkdown>
                 </PullRequestBody>
             </PullRequestStyled>
         ))}
