@@ -13,6 +13,7 @@ import { IssuesCount } from 'components/stats/issues-count';
 import { Language } from 'components/stats/language';
 import { StarsCount } from 'components/stats/stars-count';
 import { getRepoFullName } from 'utils/get-repo-full-name';
+import { formatScore } from 'utils/format-score';
 
 export type RepoCardProps = {
     repo: Repo;
@@ -130,7 +131,7 @@ export const RepoCard = memo((props: RepoCardProps) => {
                 <Link to={repoFullName}>
                     <Score>
                         Score:
-                        <H2>{(props.score * 100).toFixed(2)}</H2>
+                        <H2>{formatScore(props.score)}</H2>
                     </Score>
                 </Link>
                 <ComparisonButton

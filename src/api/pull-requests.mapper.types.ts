@@ -47,3 +47,10 @@ export type RepoPullRequest = {
     },
     authorAssociation: TAuthorAssociation;
 }
+
+export type TRepoPullRequestScore = {
+    author: number;
+    abandonRate: number;
+    toxicity: number;
+    general: number;
+}
