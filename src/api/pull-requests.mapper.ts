@@ -5,6 +5,7 @@ import { getRepoPullRequests } from 'components/pull-requests/__mocks__';
 import { BaseGitHubMapper } from './base/base-github-mapper';
 import { RepoPullRequest, TAuthorAssociation, TPullRequestsState } from './pull-requests.mapper.types';
 import { GetRepoPullRequestsConfig } from './pull-requests.types';
+import { ContributorResponse, contributorsMapper } from './contributors.mapper';
 
 export const ITEMS_PER_PAGE = 5;
 
@@ -29,10 +30,13 @@ export class PullRequestsMapper extends BaseGitHubMapper {
             }
         }))
 
+        console.log({ response })
+
         return response.data.map((item) => ({
             id: item.id,
             number: item.number,
             state: item.state as TPullRequestsState | null,
+            author: !item.head.user ? null : contributorsMapper.mapSimplifiedResponseItemToEntity(item.head.user),
             title: item.title,
             body: item.body,
             draft: item.draft ?? false,

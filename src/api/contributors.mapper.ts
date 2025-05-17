@@ -1,19 +1,31 @@
 import { makeAutoObservable } from "mobx";
+
 import { GetRepoRelatedInfoRequestConfig } from "./base/base-github.types";
 
-export type Contributor = {
+/**
+ * For entities that are returned alongside other responses with a simplified interface.
+ */
+export type ContributorSimplified = {
     id: number;
     name: string;
-    contributions: number;
     avatar: string;
 }
 
-export type ContributorResponse = {
+/**
+ * For entities that are returned alongside other responses with a simplified interface.
+ */
+export type ContributorSimplifiedResponse = {
     id: number;
     login: string;
-    contributions: number;
     avatar_url: string;
 }
+
+export type Contributor = ContributorSimplified & {
+    contributions: number;
+};
+export type ContributorResponse = ContributorSimplifiedResponse & {
+    contributions: number;
+};
 
 export type GetContributorsResponse = ContributorResponse[] | undefined;
 
@@ -28,7 +40,26 @@ export class ContributorsMapper {
         makeAutoObservable(this);
     }
 
-    async read({ ownerName, repoName }: GetContributorsRequestConfig): Promise<Contributor[]> {
+    /**
+     * For entities that are returned alongside other responses with a simplified interface.
+     */
+    public mapSimplifiedResponseItemToEntity(item: ContributorSimplifiedResponse): ContributorSimplified {
+        return {
+            ...item,
+            name: item.login,
+            avatar: item.avatar_url,
+        }
+    }
+
+    public mapResponseItemToEntity(item: ContributorResponse): Contributor {
+        return {
+            ...item,
+            name: item.login,
+            avatar: item.avatar_url,
+        }
+    }
+
+    async read({ ownerName, repoName }: GetContributorsRequestConfig) {
 
         const response = await fetch(`https://api.github.com/repos/${ownerName}/${repoName}/contributors`, {
             headers: this.GITHUB_TOKEN ? { Authorization: `Bearer ${this.GITHUB_TOKEN}` } : undefined
@@ -36,11 +67,7 @@ export class ContributorsMapper {
 
         const data = await response.json() as GetContributorsResponse;
 
-        return !data ? [] : data.map((item: ContributorResponse) => ({
-            ...item,
-            name: item.login,
-            avatar: item.avatar_url,
-        }));
+        return !data ? [] : data.map((item) => this.mapResponseItemToEntity(item));
     }
 }
 

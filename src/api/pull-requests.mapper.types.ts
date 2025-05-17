@@ -1,3 +1,5 @@
+import { ContributorSimplified } from "./contributors.mapper";
+
 /** UTC Date-like string such as "2025-05-07T14:23:53Z" */
 type TDate = string;
 /** Url-like string. */
@@ -9,6 +11,7 @@ export type RepoPullRequest = {
     id: number;
     number: number;
     state: TPullRequestsState | null;
+    author: ContributorSimplified | null;
     title: string;
     body: string | null;
     draft: boolean;
