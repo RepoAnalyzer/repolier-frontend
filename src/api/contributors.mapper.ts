@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { GetRepoRelatedInfoRequestConfig } from "./base/base-github.types";
 
 export type Contributor = {
     id: number;
@@ -16,11 +17,7 @@ export type ContributorResponse = {
 
 export type GetContributorsResponse = ContributorResponse[] | undefined;
 
-export interface GetContributorsRequestConfig {
-    ownerName: string;
-    repoName: string;
-}
-
+export type GetContributorsRequestConfig = GetRepoRelatedInfoRequestConfig
 
 export class ContributorsMapper {
     GITHUB_TOKEN?: string = undefined;
