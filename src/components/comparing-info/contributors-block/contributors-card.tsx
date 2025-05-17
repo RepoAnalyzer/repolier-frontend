@@ -12,7 +12,7 @@ export const Avatar = styled.img`
 `;
 
 export type ContributorCardProps = {
-    contributor: Contributor;
+    contributor: PartialBy<Contributor, 'contributions'>;
 };
 
 export const ContributorCard = (props: ContributorCardProps) => {
@@ -22,7 +22,7 @@ export const ContributorCard = (props: ContributorCardProps) => {
         <ContributorCardStyled>
             <div>{contributor.name}</div>
             <Avatar src={contributor.avatar} />
-            <div>{contributor.contributions}</div>
+            {contributor.contributions && (<div>{contributor.contributions}</div>)}
         </ContributorCardStyled>
     );
 };

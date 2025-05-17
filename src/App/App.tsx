@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { BiUpArrow } from 'react-icons/bi';
 import { GiPlantRoots } from 'react-icons/gi';
 import { GoPin } from 'react-icons/go';
 import { BrowserRouter, Route, Routes, useParams } from 'react-router';
 import { palette, semanticPalette } from 'assets/palette/palette';
 import { observer } from 'mobx-react-lite';
-import { Octokit } from 'octokit';
+import { PullRequestsStore } from 'stores/pull-requests.store';
 import { styled } from 'styled-components';
 
 import { ComparingInfo } from 'components/comparing-info/comparing-info';
@@ -13,6 +13,7 @@ import { RepoCard } from 'components/repo-card/repo-card';
 import { reposMediator } from 'components/repos/repos.mediator';
 import { SearchBar } from 'components/search-bar/search-bar';
 import { getRepoFullName } from 'utils/get-repo-full-name';
+import { PullRequests } from 'components/pull-requests/pull-requests';
 
 export const Button = styled.button`
     color: ${semanticPalette.contrasting};
@@ -173,16 +174,8 @@ const ReposPage = observer(() => (
     </>
 ))
 
-// Octokit.js
-// https://github.com/octokit/core.js#readme
-const octokit = new Octokit({
-    auth: process.env.REACT_APP_GITHUB_TOKEN,
-})
-
 const RepoPage = observer(() => {
     const params = useParams()
-
-    console.log({ params })
 
     const { ownerName, repoName } = params
 
@@ -190,40 +183,34 @@ const RepoPage = observer(() => {
         return null
     }
 
-    const repo = reposMediator.itemsMap.get(getRepoFullName({ owner: ownerName, name: repoName }));
-
-    console.log({ repo })
+    const repoFullName = getRepoFullName({ owner: ownerName, name: repoName })
+    const repo = reposMediator.itemsMap.get(repoFullName);
 
     if (!repo) {
         return null
     }
 
-    useEffect(() => {
-        octokit.request('GET /repos/{owner}/{repo}/pulls', {
-            owner: repo.owner,
-            repo: repo.name,
-            headers: {
-                // Last version as of 2025-05-11.
-                // https://docs.github.com/en/rest/about-the-rest-api/api-versions
-                'X-GitHub-Api-Version': '2022-11-28'
-            }
-        }).then((response: unknown) => {
-            console.log(response)
-        })
-    }, [repo.name, repo.owner])
+    const pullRequests = reposMediator.services.score.pullRequests.itemMap.get(repoFullName)
 
-    return (<>
+    // REFACTOR: Should be a getter in reposMediator and cached in repo.
+    const score = useMemo(() =>
+        reposMediator.getRepoScore(repoFullName),
+        [repoFullName]
+    )
 
-        <RepoCard
-            key={repo.name}
-            repo={repo}
-            score={reposMediator.getRepoScore(getRepoFullName(repo))}
-            onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
-            onRepoDetailedComparisonCheck={(e) =>
-                reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
-            }
-        />
-    </>
+    return (
+        <>
+            <RepoCard
+                key={repo.name}
+                repo={repo}
+                score={score}
+                onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
+                onRepoDetailedComparisonCheck={(e) =>
+                    reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
+                }
+            />
+            {!pullRequests?.length ? <span>No open pull requests found for this repo</span> : <PullRequests pullRequests={pullRequests} />}
+        </>
     )
 })
 

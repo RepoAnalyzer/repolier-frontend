@@ -14,4 +14,3 @@ export class PullRequestsStore extends StoreWithFetch<RepoPullRequest, GetRepoPu
 }
 
 export const pullRequestsStore = new PullRequestsStore();
-
