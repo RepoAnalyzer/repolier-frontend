@@ -19,7 +19,7 @@ export const Contributors = styled.div`
 
 // TODO: Add shimmer.
 export const ContributorsBlock = observer(() => {
-    const contributors = reposMediator.services.contributors.itemMap;
+    const contributors = reposMediator.services.analytics.contributors.itemMap;
 
     return (
         <ComparingInfoStyled>

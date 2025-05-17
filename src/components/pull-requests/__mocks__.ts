@@ -1,4 +1,4 @@
-import { GetRepoPullRequestsResponse } from "api/pull-requests.mapper.types";
+import { GetRepoPullRequestsResponse } from "api/pull-requests.types";
 
 export const PULL_REQUESTS_RESPONSE: GetRepoPullRequestsResponse = {
     "url": "https://api.github.com/repos/tesseract-ocr/tesseract/pulls",

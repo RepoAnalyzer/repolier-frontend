@@ -4,11 +4,12 @@ import { searchTS } from 'scripts/search.script';
 import { RequestSortBy } from 'components/repos/repo.mapper.types';
 import { getRepoFullName } from 'utils/get-repo-full-name';
 
+import { REPOS_MAP } from './__mocks__';
 import { contributorsRepoService } from './contributors.service';
 import { getScore } from './getScore';
 import { languagesRepoService } from './languages.service';
+import { pullRequestsRepoService } from './pull-requests.service';
 import { Repo, SortBy } from './repos.types';
-import { REPOS_MAP } from './__mocks__';
 
 export type LanguagesMap = Map<string, number>;
 
@@ -28,8 +29,13 @@ class ReposMediator {
     _comparingItems: string[] = [];
 
     public services = {
-        languages: languagesRepoService,
-        contributors: contributorsRepoService,
+        analytics: {
+            languages: languagesRepoService,
+            contributors: contributorsRepoService,
+        },
+        score: {
+            pullRequests: pullRequestsRepoService,
+        }
     };
 
     constructor() {
@@ -106,6 +112,10 @@ class ReposMediator {
 
         this.itemsMap.delete(repoFullName);
 
+        // Remove linked services' entities.
+        Object.values(this.services.score).forEach((service) => service.remove(repoFullName));
+
+        // Also removes linked service entities that are related to analytics.
         this.removeFromDetailedComparison(repoFullName);
     }
 
@@ -121,7 +131,7 @@ class ReposMediator {
             ...this._comparingItems.slice(repoIndex + 1),
         ];
 
-        Object.values(this.services).forEach((service) => service.remove(repoFullName));
+        Object.values(this.services.analytics).forEach((service) => service.remove(repoFullName));
     }
 
     public addToDetailedComparison(repoFullName: string) {
@@ -133,7 +143,8 @@ class ReposMediator {
 
         this._comparingItems = [...this._comparingItems, repoFullName];
 
-        Object.values(this.services).forEach((service) => service.add(repo));
+        // Get each service data about current repo for enhanced analytics.
+        Object.values(this.services.analytics).forEach((service) => service.add(repo));
     }
 
     public setDetailedComparison(repoFullName: string, isChecked: boolean) {
@@ -150,6 +161,9 @@ class ReposMediator {
         if (!repo) {
             throw new TypeError(`Requested to get a score for inexisting repo by name: ${repoFullName}`);
         }
+
+        // Get each service data about current repo for precise score.
+        Object.values(this.services.score).forEach((service) => service.add(repo));
 
         return getScore(repo);
     }
