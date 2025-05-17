@@ -1,9 +1,10 @@
 import React, { ChangeEvent, memo } from 'react';
 import { Link } from 'react-router';
-import { RepoPullRequest } from 'api/pull-requests.mapper.types';
+import { RepoPullRequest, TAuthorAssociation } from 'api/pull-requests.mapper.types';
 import { semanticPalette } from 'assets/palette/palette';
 import styled from 'styled-components';
 
+import { Ol } from 'components/atomics/atomics';
 import { ContributorCard } from 'components/comparing-info/contributors-block/contributors-card';
 import { Description } from 'components/description';
 import { RepoLink } from 'components/repo-link';
@@ -32,12 +33,23 @@ export const PullRequestStyled = styled.li`
     }
 `
 
+export const PullRequestsStyled = styled(Ol)`
+    ${PullRequestStyled} {
+        margin-bottom: 16px;
+    }
+`
+
 export const PullRequestHeader = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
     ${BLOCK_PADDING}
 `
+
+export const PullRequestBody = styled.body`
+    ${BLOCK_PADDING}
+`
+
 
 export const Dates = styled.div`
     display: flex;
@@ -82,25 +94,31 @@ export const DescriptionStyled = styled(Description)`
     height: 150px;
 `
 
+const authorAssociationMap: Record<TAuthorAssociation, string | undefined> = {
+    'OWNER': 'Owner',
+    'CONTRIBUTOR': 'Contributor',
+    'NONE': undefined,
+}
+
 export const PullRequests = (props: PullRequestsProps) => {
     const { pullRequests } = props;
 
     return (
-        <ol>{pullRequests.map((pullRequest) => (
+        <PullRequestsStyled>{pullRequests.map((pullRequest) => (
             <PullRequestStyled key={pullRequest.id}>
                 <PullRequestHeader>
                     <div>
+                        <span>{authorAssociationMap[pullRequest.authorAssociation]}</span>
                         {pullRequest.author && (<ContributorCard contributor={pullRequest.author} />)}
-                        <span>{pullRequest.authorAssociation}</span>
                     </div>
                     <H2>{pullRequest.title}</H2>
                 </PullRequestHeader>
-                <div>
+                <PullRequestBody>
                     <p>{pullRequest.body}</p>
-                </div>
+                </PullRequestBody>
             </PullRequestStyled>
         ))}
-        </ol>
+        </PullRequestsStyled>
     );
 }
 

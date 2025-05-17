@@ -1,4 +1,5 @@
 import { palette, semanticPalette } from 'assets/palette/palette';
+import { Ol } from 'components/atomics/atomics';
 import styled from 'styled-components';
 
 export type InputProps = {
@@ -67,10 +68,8 @@ export const Shimmer = styled.div`
     background-color: #f1f1f1;
 `
 
-export const SearchResultsStyled = styled.ol`
+export const SearchResultsStyled = styled(Ol)`
     width: 100%;
-    padding: 0;
-    list-style-type: none;
 `
 
 export const Select = styled.div`
