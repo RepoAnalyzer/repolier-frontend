@@ -1,10 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { semanticPalette } from 'assets/palette/palette';
 import {
-    D3DragEvent,
-    D3ZoomEvent,
     drag,
-    DraggedElementBaseType,
     forceCenter,
     ForceLink,
     forceLink,
@@ -14,34 +11,12 @@ import {
     schemeCategory10,
     select,
     Selection,
-    SimulationLinkDatum,
-    SimulationNodeDatum,
     zoom,
-    ZoomedElementBaseType,
 } from 'd3';
 import { styled } from 'styled-components';
+import { D3Link, D3Node, Graph, TD3DragEvent, TD3ZoomEvent } from 'types/graph';
 
 import { formatScore } from 'utils/format-score';
-
-type D3Node = SimulationNodeDatum & {
-    id: string,
-    group: number
-};
-
-type D3Link = SimulationLinkDatum<D3Node> & {
-    source: string,
-    target: string,
-    value: number
-};
-
-// Not sure about second generic argument (Datum).
-type TD3DragEvent = D3DragEvent<DraggedElementBaseType, D3Node, D3Node>;
-type TD3ZoomEvent = D3ZoomEvent<ZoomedElementBaseType, D3Node>;
-
-type Graph = {
-    nodes: D3Node[],
-    links: D3Link[]
-};
 
 export type PullRequestsNetworkGraphProps = {
     width: number;
@@ -208,13 +183,12 @@ export const PullRequestsNetworkGraph = (props: PullRequestsNetworkGraphProps) =
         }
 
         zoomModule(context)
-
     }, [height, links, nodes, width, zoomModule])
 
     return (
         <div>
             <PullRequestsNetworkGraphStyled style={{ width, height }}>
-                <NetworkGraph className="container" ref={ref} width={width} height={height} />
+                <NetworkGraph ref={ref} width={width} height={height} />
             </PullRequestsNetworkGraphStyled >
         </div>
     );
