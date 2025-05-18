@@ -1,7 +1,7 @@
 import React, { ChangeEvent, memo } from 'react';
-import { Link } from 'react-router';
 import { semanticPalette } from 'assets/palette/palette';
 import { styled } from 'styled-components';
+import { THref } from 'types/general';
 
 import { Description } from 'components/description';
 import { RepoLink } from 'components/repo-link';
@@ -12,14 +12,19 @@ import { ForksCount } from 'components/stats/forks-count';
 import { IssuesCount } from 'components/stats/issues-count';
 import { Language } from 'components/stats/language';
 import { StarsCount } from 'components/stats/stars-count';
+import { Link } from 'components/ui-kit/atomics/link';
 import { formatScore } from 'utils/format-score';
 import { getRepoFullName } from 'utils/get-repo-full-name';
 
 export type RepoCardProps = {
     repo: Repo;
     score: number;
-    onRemoveFromComparison: (repo: Repo) => void;
-    onRepoDetailedComparisonCheck: (e: ChangeEvent<HTMLInputElement>) => void;
+    /* React-router `to` link. Will render score as wrapped in a react-router link if passed. */
+    scoreLink?: string;
+    /* Won't show button if no callback is passed. */
+    onRemoveFromComparison?: (repo: Repo) => void;
+    /* Won't show checkbox if no callback is passed. */
+    onRepoDetailedComparisonCheck?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const BLOCK_PADDING = `padding: 8px 16px;`;
@@ -75,15 +80,19 @@ export const Footer = styled.footer`
     height: 32px;
     ${BLOCK_PADDING}
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 `
 
+const ScoreLink = styled(Link)`
+    flex-grow: 1;
+`
+
 export const Score = styled.span`
-    width: 90px;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 `
 
 export const H2 = styled.h2`
@@ -99,9 +108,16 @@ export const DescriptionStyled = styled(Description)`
 `
 
 export const RepoCard = memo((props: RepoCardProps) => {
-    const { repo } = props;
+    const { repo, onRemoveFromComparison, onRepoDetailedComparisonCheck } = props;
 
     const repoFullName = getRepoFullName(repo);
+
+    const scoreEl = (
+        <Score>
+            Score:
+            <H2>{formatScore(props.score)}</H2>
+        </Score>
+    );
 
     return (
         <RepoCardStyled>
@@ -124,22 +140,23 @@ export const RepoCard = memo((props: RepoCardProps) => {
                 </Dates>
             </Stats>
             <Footer>
-                <div>
-                    <input type="checkbox" id={repoFullName} name={repoFullName} onChange={props.onRepoDetailedComparisonCheck} />
-                    <label htmlFor={repoFullName}>Compare</label>
-                </div>
-                <Link to={repoFullName}>
-                    <Score>
-                        Score:
-                        <H2>{formatScore(props.score)}</H2>
-                    </Score>
-                </Link>
-                <ComparisonButton
-                    preset="remove"
-                    onClick={() => props.onRemoveFromComparison(repo)}
-                >
-                    Remove
-                </ComparisonButton>
+                {onRepoDetailedComparisonCheck && (
+                    <div>
+                        <input type="checkbox" id={repoFullName} name={repoFullName} onChange={onRepoDetailedComparisonCheck} />
+                        <label htmlFor={repoFullName}>Compare</label>
+                    </div>
+                )}
+                {!props.scoreLink ? scoreEl : (<ScoreLink to={repoFullName}>
+                    {scoreEl}
+                </ScoreLink>)}
+                {onRemoveFromComparison && (
+                    <ComparisonButton
+                        preset="remove"
+                        onClick={() => onRemoveFromComparison(repo)}
+                    >
+                        Remove
+                    </ComparisonButton>
+                )}
             </Footer>
         </RepoCardStyled>
     );

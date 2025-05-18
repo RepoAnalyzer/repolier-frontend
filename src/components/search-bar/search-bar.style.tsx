@@ -1,7 +1,7 @@
 import { palette, semanticPalette } from 'assets/palette/palette';
 import { styled } from 'styled-components';
 
-import { Ol } from 'components/ui-kit/atomics';
+import { Ol } from 'components/ui-kit/atomics/ol';
 
 export type InputProps = {
     $isSearching: boolean;

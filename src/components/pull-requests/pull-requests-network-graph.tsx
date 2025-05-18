@@ -169,8 +169,9 @@ export const PullRequestsNetworkGraph = (props: PullRequestsNetworkGraphProps) =
     }, [height, links, nodes, width])
 
     return (
-        <NetworkGraph className="container" ref={ref}
-            width={width} height={height}>
-        </NetworkGraph>
+        <div style={{ width, height }}>
+            <NetworkGraph className="container" ref={ref} width={width} height={height}>
+            </NetworkGraph>
+        </div >
     );
 }
