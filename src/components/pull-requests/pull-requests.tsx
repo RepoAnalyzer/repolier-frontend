@@ -1,4 +1,6 @@
 import React, { memo } from 'react';
+import { LiaScrollSolid } from "react-icons/lia";
+import { PiGraphFill } from "react-icons/pi";
 import { Accordion, AccordionItem } from '@szhsin/react-accordion';
 import { RepoPullRequest, TAuthorAssociation, TRepoPullRequestScore } from 'api/pull-requests.mapper.types';
 import { semanticPalette } from 'assets/palette/palette';
@@ -7,7 +9,6 @@ import { Graph } from 'types/graph';
 
 import { ContributorCard } from 'components/comparing-info/contributors-block/contributors-card';
 import { Description } from 'components/description';
-import { ComparisonButton } from 'components/search-bar/search-result.style';
 import { GHMarkdown } from 'components/ui-kit/markdown';
 
 import { pullRequestsGraphs } from './__mocks__/pull-requests-graphs';
@@ -23,25 +24,15 @@ const BLOCK_PADDING = `padding: 8px 16px;`;
 const BLOCK_BORDER = `border-bottom: 2px solid ${semanticPalette.emphasizing};`;
 const TRANSITION_TIMEOUT = 400
 
-export const PullRequestStyled = styled(AccordionItem)`
-    border-radius: 16px;
-    border: 2px solid ${semanticPalette.emphasizing};
-    background-color: ${semanticPalette.primary};
+export const AccordionItemStyled = styled(AccordionItem)`
     transition: border-color 0.25s ease-in-out;
-
-    &:hover {
-        border-color: ${semanticPalette.contrasting2};
-    }
-
-    &:hover ${ComparisonButton} {
-        opacity: 1;
-    }
+    background-color: ${semanticPalette.primary};
 
     .szh-accordion__item {
         width: 100%;
 
         &-btn {
-            border-radius: 16px;
+            border-radius: 0;
             width: 100%;
             background-color: transparent;
             border: none;
@@ -49,8 +40,6 @@ export const PullRequestStyled = styled(AccordionItem)`
             &:hover {
               background-color: ${semanticPalette.hover};
             }
-
-            transition: border-radius ${TRANSITION_TIMEOUT}ms ease-in-out;
         }
 
         &-content {
@@ -60,10 +49,56 @@ export const PullRequestStyled = styled(AccordionItem)`
 
     &.szh-accordion__item--expanded {
         .szh-accordion__item-btn {
-            border-radius: 16px 16px 0 0;
+            border-radius: 0;
             background-color: ${semanticPalette.activated};
-            transition: border-radius 50ms ease-in-out;
+
         }
+`
+
+export const PullRequestBodyAccordionItem = styled(AccordionItemStyled)`
+    .szh-accordion__item {
+        &-btn {
+            border-bottom: 2px solid ${semanticPalette.contrasting2};
+        }
+    }
+`
+
+export const AccordionHeader = styled.header`
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    font-size: 1.2rem;
+    gap: 4px;
+`
+
+export const PullRequestHeader = styled.header`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    ${BLOCK_PADDING}
+`
+
+
+export const PullRequestStyled = styled(AccordionItemStyled)`
+    border-radius: 16px;
+    border: 2px solid ${semanticPalette.emphasizing};
+
+    &:hover {
+        border-color: ${semanticPalette.contrasting2};
+    }
+
+    .szh-accordion__item {
+        &-btn {
+            border-radius: 16px;
+            transition: border-radius ${TRANSITION_TIMEOUT}ms ease-in-out;
+        }
+    }
+
+    &.szh-accordion__item--expanded >.szh-accordion__item-heading > .szh-accordion__item-btn {
+        border-radius: 16px 16px 0 0;
+        transition: border-radius 50ms ease-in-out;
+    }
 `
 
 export const PullRequestsStyled = styled(Accordion)`
@@ -72,13 +107,6 @@ export const PullRequestsStyled = styled(Accordion)`
     ${PullRequestStyled} {
         margin-bottom: 8px;
     }
-`
-
-export const PullRequestHeader = styled.header`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    ${BLOCK_PADDING}
 `
 
 export const PullRequestBody = styled.body`
@@ -153,10 +181,18 @@ const PullRequest = memo((props: PullRequestProps) => {
             </PullRequestHeader>
         }>
             <PullRequestBody>
-                <GHMarkdown>{pullRequest.body}</GHMarkdown>
-                {graph && <PullRequestsNetworkGraph width={1100} height={340} graph={graph} />}
+                <Accordion allowMultiple transition transitionTimeout={TRANSITION_TIMEOUT}>
+                    <PullRequestBodyAccordionItem header={<AccordionHeader> <LiaScrollSolid /> Содержание</AccordionHeader>} initialEntered>
+                        <GHMarkdown>{pullRequest.body}</GHMarkdown>
+                    </PullRequestBodyAccordionItem>
+                    {graph && (
+                        <PullRequestBodyAccordionItem header={<AccordionHeader><PiGraphFill /> Граф</AccordionHeader>}>
+                            <PullRequestsNetworkGraph width={1100} height={340} graph={graph} />
+                        </PullRequestBodyAccordionItem>
+                    )}
+                </Accordion>
             </PullRequestBody>
-        </PullRequestStyled>
+        </PullRequestStyled >
     );
 })
 
