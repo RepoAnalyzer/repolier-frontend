@@ -1,9 +1,7 @@
+import { TDate, THref } from "types/general";
+
 import { ContributorSimplified } from "./contributors.mapper";
 
-/** UTC Date-like string such as "2025-05-07T14:23:53Z" */
-type TDate = string;
-/** Url-like string. */
-type THref = string;
 export type TAuthorAssociation = 'OWNER' | 'CONTRIBUTOR' | 'NONE';
 export type TPullRequestsState = 'open';
 

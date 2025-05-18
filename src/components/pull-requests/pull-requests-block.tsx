@@ -17,9 +17,9 @@ export const PullRequestsBlock = (props: PullRequestsBlockProps) => {
     }
 
     return (
-        <div>
-            <PullRequestsNetworkGraph width={800} height={600} graph={miserables}  />
+        <>
+            <PullRequestsNetworkGraph width={720} height={540} graph={miserables}  />
             <PullRequests pullRequests={pullRequests} />
-        </div>
+        </>
     )
 }

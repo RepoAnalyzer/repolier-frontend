@@ -151,27 +151,34 @@ const Greeting = () => {
 };
 
 const ReposPage = observer(() => (
-    <>
+    <Main>
         <RepoCards>
             {reposMediator.items.length < 1 ? (
                 <Greeting />
             ) : (
-                reposMediator.items.map((repo) => (
-                    <RepoCard
-                        key={repo.name}
-                        repo={repo}
-                        score={reposMediator.getRepoScore(getRepoFullName(repo))}
-                        onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
-                        onRepoDetailedComparisonCheck={(e) =>
-                            reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
-                        }
-                    />
-                ))
+                reposMediator.items.map((repo) => {
+                    const repoFullName = getRepoFullName(repo);
+
+                    return (
+                        <RepoCard
+                            key={repo.name}
+                            repo={repo}
+                            score={reposMediator.getRepoScore(repoFullName)}
+                            scoreLink={repoFullName}
+                            onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
+                            onRepoDetailedComparisonCheck={(e) => reposMediator.setDetailedComparison(e.target?.id, e.target.checked)} />
+                    );
+                })
             )}
         </RepoCards>
         <ComparingInfo />
-    </>
+    </Main>
 ))
+
+const RepoPageStyled = styled(Main)`
+    display: flex;
+    flex-wrap: wrap;
+`
 
 const RepoPage = observer(() => {
     const params = useParams()
@@ -198,18 +205,14 @@ const RepoPage = observer(() => {
     )
 
     return (
-        <>
+        <RepoPageStyled>
             <RepoCard
                 key={repo.name}
                 repo={repo}
                 score={score}
-                onRemoveFromComparison={(repo) => reposMediator.removeFromComparison(repo)}
-                onRepoDetailedComparisonCheck={(e) =>
-                    reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
-                }
             />
             <PullRequestsBlock pullRequests={pullRequests} />
-        </>
+        </RepoPageStyled>
     )
 })
 
@@ -219,16 +222,14 @@ export const App = () => {
             <Header>
                 <SearchBarStyled />
             </Header>
-            <Main>
-                <BrowserRouter>
-                    <Routes>
-                        <Route index element={<ReposPage />} />
-                        <Route path=":ownerName" element={<RepoPage />}>
-                            <Route path=":repoName" element={<RepoPage />} />
-                        </Route>
-                    </Routes>
-                </BrowserRouter>
-            </Main>
+            <BrowserRouter>
+                <Routes>
+                    <Route index element={<ReposPage />} />
+                    <Route path=":ownerName" element={<RepoPage />}>
+                        <Route path=":repoName" element={<RepoPage />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
         </AppStyled>
     );
 };

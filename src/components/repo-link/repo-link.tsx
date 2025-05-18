@@ -1,7 +1,9 @@
 import React from 'react';
-import { Repo } from 'components/repos/repos.types';
-import { Link } from './repo-link.styles';
 import { MarginProps } from 'styled-system';
+
+import { Repo } from 'components/repos/repos.types';
+
+import { Link } from './repo-link.styles';
 
 export type RepoLinkProps = MarginProps & { repo: Pick<Repo, 'url' | 'owner' | 'name'> };
 
