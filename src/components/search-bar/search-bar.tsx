@@ -41,14 +41,14 @@ export const SearchBar = observer(() => {
                     reposMediator.userIsSearching = false;
                 }}
             >
-                <SearchBarStyled isSearching={reposMediator.userIsSearching}>
+                <SearchBarStyled $isSearching={reposMediator.userIsSearching}>
                     <Input
                         onFocus={() => {
                             reposMediator.userIsSearching = true;
                         }}
                         type="text"
                         placeholder="Search..."
-                        isSearching={reposMediator.userIsSearching}
+                        $isSearching={reposMediator.userIsSearching}
                         value={reposMediator.searchTerm}
                         onChange={onInputChange}
                     />
