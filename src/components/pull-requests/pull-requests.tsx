@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Accordion, AccordionItem } from '@szhsin/react-accordion';
-import { RepoPullRequest, TAuthorAssociation } from 'api/pull-requests.mapper.types';
+import { RepoPullRequest, TAuthorAssociation, TRepoPullRequestScore } from 'api/pull-requests.mapper.types';
 import { semanticPalette } from 'assets/palette/palette';
 import { styled } from 'styled-components';
+import { Graph } from 'types/graph';
 
 import { ContributorCard } from 'components/comparing-info/contributors-block/contributors-card';
 import { Description } from 'components/description';
 import { ComparisonButton } from 'components/search-bar/search-result.style';
 import { GHMarkdown } from 'components/ui-kit/markdown';
 
+import { pullRequestsGraphs } from './__mocks__/pull-requests-graphs';
 import { RepoPullRequestScore } from './pull-request-score';
+import { PullRequestsNetworkGraph } from './pull-requests-network-graph';
 import { useGetPullRequestScore } from './use-get-pull-request-score.hook';
 
 export type PullRequestsProps = {
@@ -128,28 +131,45 @@ const authorAssociationMap: Record<TAuthorAssociation, string | undefined> = {
     'NONE': undefined,
 }
 
+
+export type PullRequestProps = {
+    pullRequest: RepoPullRequest;
+    score: TRepoPullRequestScore;
+    graph?: Graph;
+}
+
+const PullRequest = memo((props: PullRequestProps) => {
+    const { pullRequest, score, graph } = props;
+
+    return (
+        <PullRequestStyled header={
+            <PullRequestHeader>
+                <div>
+                    <span>{authorAssociationMap[pullRequest.authorAssociation]}</span>
+                    {pullRequest.author && (<ContributorCard contributor={pullRequest.author} />)}
+                </div>
+                <H2>{pullRequest.title}</H2>
+                <RepoPullRequestScore score={score} />
+            </PullRequestHeader>
+        }>
+            <PullRequestBody>
+                <GHMarkdown>{pullRequest.body}</GHMarkdown>
+                {graph && <PullRequestsNetworkGraph width={1100} height={340} graph={graph} />}
+            </PullRequestBody>
+        </PullRequestStyled>
+    );
+})
+
 export const PullRequests = (props: PullRequestsProps) => {
     const { pullRequests } = props;
 
     const getPullRequestScore = useGetPullRequestScore(pullRequests);
 
     return (
-        <PullRequestsStyled allowMultiple transition transitionTimeout={TRANSITION_TIMEOUT}>{pullRequests.map((pullRequest, index) => (
-            <PullRequestStyled key={pullRequest.id} header={
-                <PullRequestHeader>
-                    <div>
-                        <span>{authorAssociationMap[pullRequest.authorAssociation]}</span>
-                        {pullRequest.author && (<ContributorCard contributor={pullRequest.author} />)}
-                    </div>
-                    <H2>{pullRequest.title}</H2>
-                    <RepoPullRequestScore score={getPullRequestScore(pullRequest, index)} />
-                </PullRequestHeader>
-            }>
-                <PullRequestBody>
-                    <GHMarkdown>{pullRequest.body}</GHMarkdown>
-                </PullRequestBody>
-            </PullRequestStyled>
-        ))}
+        <PullRequestsStyled allowMultiple transition transitionTimeout={TRANSITION_TIMEOUT}>
+            {pullRequests.map((pullRequest, index) => (
+                <PullRequest key={pullRequest.id} pullRequest={pullRequest} score={getPullRequestScore(pullRequest, index)} graph={pullRequestsGraphs[index]} />
+            ))}
         </PullRequestsStyled>
     );
 }
