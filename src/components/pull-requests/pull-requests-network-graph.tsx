@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { semanticPalette } from 'assets/palette/palette';
 import {
     D3DragEvent,
@@ -20,6 +20,7 @@ import {
     ZoomedElementBaseType,
 } from 'd3';
 import { styled } from 'styled-components';
+import { formatScore } from 'utils/format-score';
 
 type D3Node = SimulationNodeDatum & {
     id: string,
@@ -108,14 +109,21 @@ export const PullRequestsNetworkGraph = (props: PullRequestsNetworkGraphProps) =
             .enter().append("line")
             .attr("stroke-width", function (d: D3Link) {
                 return Math.sqrt(d.value);
-            });
+            })
+            /* .on('mouseover', function (d: D3Link) {
+                const nodeSelection = select(this).style({ opacity: '0.8' });
+                nodeSelection.select("text").style({ opacity: '1.0' });
+            }) */
+            ;
 
         const node = context.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
             .data(nodes)
-            .enter().append("circle")
-            .attr("r", 5)
+            // Select data nodes that don't have corresponding circle.
+            .enter()
+            .append("circle")
+            .attr("r", 7)
             .attr("fill", function (d: D3Node) {
                 return color(d.group.toString());
             })
@@ -130,10 +138,15 @@ export const PullRequestsNetworkGraph = (props: PullRequestsNetworkGraphProps) =
                 .on("end", dragended)
             );
 
-        node.append("title")
-            .text(function (d: D3Node) {
-                return d.id;
-            });
+        // Hover over vertex.
+        node
+            .append("title")
+            .text((d) => d.id)
+
+        // Hover over edge.
+        link
+            .append("title")
+            .text((d) => `Оценка: ${formatScore(d.value / 100)}`)
 
         simulation.nodes(nodes).on("tick", ticked);
         simulation.force<ForceLink<D3Node, D3Link>>("link")?.links(links);
