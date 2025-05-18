@@ -20,6 +20,7 @@ import {
     ZoomedElementBaseType,
 } from 'd3';
 import { styled } from 'styled-components';
+
 import { formatScore } from 'utils/format-score';
 
 type D3Node = SimulationNodeDatum & {
