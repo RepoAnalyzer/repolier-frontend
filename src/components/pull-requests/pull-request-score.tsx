@@ -129,7 +129,7 @@ export const RepoPullRequestScore = memo((props: RepoPullRequestScoreProps) => {
                 ref={refs.setReference} {...getReferenceProps()}
             >
                 <ScoreValue>{formatScore(score.general)}</ScoreValue>
-                <FaQuestionCircle size={18} />
+                <FaQuestionCircle size={18} color={semanticPalette.contrasting2} />
             </GeneralScore>
             {isOpen && (
                 <RepoPullRequestScoreStyled

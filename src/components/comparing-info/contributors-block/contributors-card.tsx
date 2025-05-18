@@ -2,14 +2,23 @@ import React from 'react';
 import { Contributor } from 'api/contributors.mapper';
 import { styled } from 'styled-components';
 
+const WIDTH = '64px'
+
 export const ContributorCardStyled = styled.div`
+    width: ${WIDTH};
     text-align: center;
 `;
 
 export const Avatar = styled.img`
-    width: 64px;
+    width: ${WIDTH};
     height: 64px;
 `;
+
+const Name = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: break-spaces;
+`
 
 export type ContributorCardProps = {
     contributor: PartialBy<Contributor, 'contributions'>;
@@ -18,7 +27,7 @@ export type ContributorCardProps = {
 export const ContributorCard = (props: ContributorCardProps) => {
     const { contributor } = props;
 
-    const nameEl = <div>{contributor.name}</div>
+    const nameEl = <Name>{contributor.name}</Name>
 
     const contributionsEl = <div>{contributor.contributions}</div>
 
