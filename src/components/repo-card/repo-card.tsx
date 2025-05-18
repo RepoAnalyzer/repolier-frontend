@@ -1,7 +1,6 @@
 import React, { ChangeEvent, memo } from 'react';
 import { semanticPalette } from 'assets/palette/palette';
 import { styled } from 'styled-components';
-import { THref } from 'types/general';
 
 import { Description } from 'components/description';
 import { RepoLink } from 'components/repo-link';
