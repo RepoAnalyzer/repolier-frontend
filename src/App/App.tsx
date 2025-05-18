@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite';
 import { styled } from 'styled-components';
 
 import { ComparingInfo } from 'components/comparing-info/comparing-info';
-import { PullRequests } from 'components/pull-requests/pull-requests';
+import { PullRequestsBlock } from 'components/pull-requests/pull-requests-block';
 import { RepoCard } from 'components/repo-card/repo-card';
 import { reposMediator } from 'components/repos/repos.mediator';
 import { SearchBar } from 'components/search-bar/search-bar';
@@ -208,7 +208,7 @@ const RepoPage = observer(() => {
                     reposMediator.setDetailedComparison(e.target?.id, e.target.checked)
                 }
             />
-            {!pullRequests?.length ? <span>No open pull requests found for this repo</span> : <PullRequests pullRequests={pullRequests} />}
+            <PullRequestsBlock pullRequests={pullRequests} />
         </>
     )
 })
