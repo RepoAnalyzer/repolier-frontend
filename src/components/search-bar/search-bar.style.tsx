@@ -4,11 +4,11 @@ import { styled } from 'styled-components';
 import { Ol } from 'components/ui-kit/atomics';
 
 export type InputProps = {
-    isSearching: boolean;
+    $isSearching: boolean;
 }
 
 export type SearchBarStyledProps = {
-    isSearching: boolean;
+    $isSearching: boolean;
 };
 
 export const SearchBarStyled = styled.div<SearchBarStyledProps>`
@@ -20,7 +20,7 @@ export const SearchBarStyled = styled.div<SearchBarStyledProps>`
     align-items: center;
     border-radius: 16px;
     padding: 12px 32px 12px;
-    background-color: ${(props) => props.isSearching ? semanticPalette.primary : 'inherit'};
+    background-color: ${(props) => props.$isSearching ? semanticPalette.primary : 'inherit'};
 `
 
 export const Input = styled.input<InputProps>`
@@ -30,9 +30,9 @@ export const Input = styled.input<InputProps>`
     font-size: 24px;
     line-height: 24px;
     border-radius: 8px;
-    border: 1px solid ${(props) => !props.isSearching ? semanticPalette.vague : semanticPalette.contrasting2};
-    background-color: ${(props) => !props.isSearching ? palette.black : semanticPalette.primary};
-    color: ${(props) => !props.isSearching ? semanticPalette.primary : semanticPalette.informational.primary};
+    border: 1px solid ${(props) => !props.$isSearching ? semanticPalette.vague : semanticPalette.contrasting2};
+    background-color: ${(props) => !props.$isSearching ? palette.black : semanticPalette.primary};
+    color: ${(props) => !props.$isSearching ? semanticPalette.primary : semanticPalette.informational.primary};
     outline: none;
 
     &:focus {
@@ -42,7 +42,7 @@ export const Input = styled.input<InputProps>`
     }
 
     &::placeholder {
-        color: ${(props) => !props.isSearching ? semanticPalette.informational.secondary : semanticPalette.informational.primary};
+        color: ${(props) => !props.$isSearching ? semanticPalette.informational.secondary : semanticPalette.informational.primary};
     }
 `
 

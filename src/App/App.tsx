@@ -27,14 +27,14 @@ const HEADER_HEIGHT = '98px';
 const THIN_HEADER_HEIGHT = '20px';
 
 export type HeaderStyledProps = {
-    isVisible: boolean;
+    $isVisible: boolean;
 };
 
 //   padding-top should be no lower then THIN_HEADER_HEIGHT otherwise it overlaps with
 // input content no matter the z-index.
 export const HeaderStyled = styled.header<HeaderStyledProps>`
     z-index: 2;
-    position: ${(props) => (props.isVisible ? 'fixed' : 'absolute')};
+    position: ${(props) => (props.$isVisible ? 'fixed' : 'absolute')};
     width: 100%;
     height: ${HEADER_HEIGHT};
     background-color: ${palette.black};
@@ -97,7 +97,7 @@ export const Header = (props: HeaderProps) => {
 
     return (
         <>
-            <HeaderStyled isVisible={isVisible}>{props.children}</HeaderStyled>
+            <HeaderStyled $isVisible={isVisible}>{props.children}</HeaderStyled>
             <HeaderThin onClick={() => setIsVisible((isVisible) => !isVisible)}>
                 {isVisible ? <BiUpArrowStyled /> : <GoPinStyled />}
             </HeaderThin>
