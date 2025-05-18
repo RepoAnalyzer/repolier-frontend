@@ -1,6 +1,20 @@
 import React, { useEffect, useRef } from 'react'
 import { semanticPalette } from 'assets/palette/palette';
-import { D3DragEvent, drag, DraggedElementBaseType, forceCenter, ForceLink, forceLink, forceManyBody, forceSimulation, scaleOrdinal, schemeCategory10, select, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
+import {
+    D3DragEvent,
+    drag,
+    DraggedElementBaseType,
+    forceCenter,
+    ForceLink,
+    forceLink,
+    forceManyBody,
+    forceSimulation,
+    scaleOrdinal,
+    schemeCategory10,
+    select,
+    SimulationLinkDatum,
+    SimulationNodeDatum,
+} from 'd3';
 import { styled } from 'styled-components';
 
 type D3Node = SimulationNodeDatum & {
