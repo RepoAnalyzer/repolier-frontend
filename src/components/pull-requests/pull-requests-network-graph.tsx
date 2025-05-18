@@ -110,10 +110,6 @@ export const PullRequestsNetworkGraph = (props: PullRequestsNetworkGraphProps) =
             .attr("stroke-width", function (d: D3Link) {
                 return Math.sqrt(d.value);
             })
-            /* .on('mouseover', function (d: D3Link) {
-                const nodeSelection = select(this).style({ opacity: '0.8' });
-                nodeSelection.select("text").style({ opacity: '1.0' });
-            }) */
             ;
 
         const node = context.append("g")
