@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { semanticPalette } from 'assets/palette/palette';
 import {
     D3DragEvent,
+    D3ZoomEvent,
     drag,
     DraggedElementBaseType,
     forceCenter,
@@ -12,8 +13,11 @@ import {
     scaleOrdinal,
     schemeCategory10,
     select,
+    Selection,
     SimulationLinkDatum,
     SimulationNodeDatum,
+    zoom,
+    ZoomedElementBaseType,
 } from 'd3';
 import { styled } from 'styled-components';
 
@@ -30,6 +34,7 @@ type D3Link = SimulationLinkDatum<D3Node> & {
 
 // Not sure about second generic argument (Datum).
 type TD3DragEvent = D3DragEvent<DraggedElementBaseType, D3Node, D3Node>;
+type TD3ZoomEvent = D3ZoomEvent<ZoomedElementBaseType, D3Node>;
 
 type Graph = {
     nodes: D3Node[],
@@ -41,6 +46,10 @@ export type PullRequestsNetworkGraphProps = {
     height: number;
     graph: Graph;
 }
+
+const PullRequestsNetworkGraphStyled = styled.div`
+    overflow: hidden;
+`
 
 const NetworkGraph = styled.svg`
     .links {
@@ -60,7 +69,28 @@ export const PullRequestsNetworkGraph = (props: PullRequestsNetworkGraphProps) =
 
     const { width, height, graph: { links, nodes } } = props;
 
+
+    const zoomModule = useCallback((selection: Selection<SVGSVGElement, unknown, null, undefined>) => {
+        const handleZoom = (e: TD3ZoomEvent) => {
+            selection
+                // @ts-expect-error It seems like an error in library typing.
+                // According to types `attr` expects array-like structure but it works with
+                // `ZoomTransform` class directly just fine.
+                .attr('transform', e.transform)
+        }
+
+        const zoomBehaviour = zoom()
+            .on('zoom', handleZoom);
+
+        // @ts-expect-error FIX: quite hard error, I don't know the reason.
+        selection.call(zoomBehaviour)
+    }, [])
+
     useEffect(() => {
+        if (!ref.current) {
+            return
+        }
+
         const context = select(ref.current);
         const color = scaleOrdinal(schemeCategory10);
 
@@ -166,12 +196,16 @@ export const PullRequestsNetworkGraph = (props: PullRequestsNetworkGraphProps) =
                     return d.y ?? null;
                 });
         }
-    }, [height, links, nodes, width])
+
+        zoomModule(context)
+
+    }, [height, links, nodes, width, zoomModule])
 
     return (
-        <div style={{ width, height }}>
-            <NetworkGraph className="container" ref={ref} width={width} height={height}>
-            </NetworkGraph>
-        </div >
+        <div>
+            <PullRequestsNetworkGraphStyled style={{ width, height }}>
+                <NetworkGraph className="container" ref={ref} width={width} height={height} />
+            </PullRequestsNetworkGraphStyled >
+        </div>
     );
 }
