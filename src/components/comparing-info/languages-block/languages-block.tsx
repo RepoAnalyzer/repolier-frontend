@@ -6,6 +6,7 @@ import { RepoLink } from 'components/repo-link';
 import { reposMediator } from 'components/repos/repos.mediator';
 
 import { LanguagesPie } from './languages-pie';
+import { useTranslation } from 'react-i18next';
 
 export const LanguagesPies = styled.div`
     margin-top: 36px;
@@ -15,18 +16,22 @@ export const LanguagesPies = styled.div`
 `;
 
 export const LanguagesBlock = observer(() => {
+    const { t } = useTranslation()
+
     if (reposMediator.comparingItems.length < 1) {
         return null;
     }
     const languagesMap = reposMediator.services.analytics.languages.itemMap;
 
+    const headingEl = <h2>{t('Programming languages') }</h2>
+
     if (languagesMap.size < 1) {
-        return <h2>Languages</h2>;
+        return headingEl;
     }
 
     return (
         <div>
-            <h2>Languages</h2>
+            {headingEl}
             <LanguagesPies>
                 {Array.from(languagesMap.entries()).map(([repoFullName, repoLanguages]) => {
                     const repo = reposMediator.itemsMap.get(repoFullName);

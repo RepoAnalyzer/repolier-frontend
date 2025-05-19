@@ -1,4 +1,5 @@
 import React, { ChangeEvent, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { semanticPalette } from 'assets/palette/palette';
 import { styled } from 'styled-components';
 
@@ -109,11 +110,13 @@ export const DescriptionStyled = styled(Description)`
 export const RepoCard = memo((props: RepoCardProps) => {
     const { repo, onRemoveFromComparison, onRepoDetailedComparisonCheck } = props;
 
+    const { t } = useTranslation()
+
     const repoFullName = getRepoFullName(repo);
 
     const scoreEl = (
         <Score>
-            Score:
+            {t('Score')}:
             <H2>{formatScore(props.score)}</H2>
         </Score>
     );
@@ -142,7 +145,7 @@ export const RepoCard = memo((props: RepoCardProps) => {
                 {onRepoDetailedComparisonCheck && (
                     <div>
                         <input type="checkbox" id={repoFullName} name={repoFullName} onChange={onRepoDetailedComparisonCheck} />
-                        <label htmlFor={repoFullName}>Compare</label>
+                        <label htmlFor={repoFullName}>{t('Compare')}</label>
                     </div>
                 )}
                 {!props.scoreLink ? scoreEl : (<ScoreLink to={repoFullName}>
@@ -153,7 +156,7 @@ export const RepoCard = memo((props: RepoCardProps) => {
                         preset="remove"
                         onClick={() => onRemoveFromComparison(repo)}
                     >
-                        Remove
+                        {t('Remove')}
                     </ComparisonButton>
                 )}
             </Footer>

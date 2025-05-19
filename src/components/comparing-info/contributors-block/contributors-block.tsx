@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { styled } from 'styled-components';
 
@@ -19,11 +20,13 @@ export const Contributors = styled.div`
 
 // TODO: Add shimmer.
 export const ContributorsBlock = observer(() => {
+    const { t } = useTranslation()
+
     const contributors = reposMediator.services.analytics.contributors.itemMap;
 
     return (
         <ComparingInfoStyled>
-            {reposMediator.comparingItems.length > 0 && <h2>Contributions</h2>}
+            {reposMediator.comparingItems.length > 0 && <h2>{t('Contributions')}</h2>}
             {contributors.size > 0 &&
                 Array.from(contributors.entries()).map(([repoFullName, contributorsForRepo]) => {
                     const repo = reposMediator.itemsMap.get(repoFullName);
@@ -32,7 +35,7 @@ export const ContributorsBlock = observer(() => {
                         <Contributors key={repoFullName}>
                             {repo && (
                                 <span>
-                                    Contributions for <RepoLink repo={repo} />
+                                    {t('Contributions for') } <RepoLink repo={repo} />
                                 </span>
                             )}
                             {contributorsForRepo.length < 1 ? (
