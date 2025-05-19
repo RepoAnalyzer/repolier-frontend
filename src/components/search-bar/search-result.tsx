@@ -1,5 +1,7 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
+import { Description } from "components/description";
 import { RepoLink } from "components/repo-link";
 import { Repo } from 'components/repos/repos.types';
 import { CreatedAt, UpdatedAt } from "components/stats/dates";
@@ -7,7 +9,6 @@ import { ForksCount } from "components/stats/forks-count";
 import { IssuesCount } from "components/stats/issues-count";
 import { Language } from "components/stats/language";
 import { StarsCount } from "components/stats/stars-count";
-import { Description } from "components/description";
 
 import { ComparisonButton, Dates, Footer, Header, SearchResultStyled, Stats } from "./search-result.style";
 
@@ -17,6 +18,7 @@ export type SearchResultProps = {
 }
 
 export const SearchResult = (props: SearchResultProps) => {
+    const { t } = useTranslation()
     const { repo } = props;
 
     return (
@@ -27,7 +29,7 @@ export const SearchResult = (props: SearchResultProps) => {
                     preset="add"
                     onClick={() => { props.onAddToComparisonClick(repo) }}
                 >
-                    Add to comparison
+                    {t('Add to comparison')}
                 </ComparisonButton>
             </Header>
             {repo.description && (

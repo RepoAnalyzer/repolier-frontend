@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import format from 'date-fns/format'
 
 export const formatDateAsRuFull = (date: string) =>
@@ -7,16 +8,26 @@ export const formatDateAsRuFull = (date: string) =>
 export type CreatedAtProps = {
     created_at: string;
 }
-export const CreatedAt = (props: CreatedAtProps) =>
-    <span>
-        {`Created at ${formatDateAsRuFull(props.created_at)}`}
-    </span>
+export const CreatedAt = (props: CreatedAtProps) => {
+    const { t } = useTranslation()
+
+    return (
+        <span>
+            {t('Created at', { date: formatDateAsRuFull(props.created_at) })}
+        </span>
+    );
+}
 
 export type UpdatedAtProps = {
     updated_at: string;
 }
-export const UpdatedAt = (props: UpdatedAtProps) =>
-    <span>
-        {`Updated at ${formatDateAsRuFull(props.updated_at)}`}
-    </span>
+export const UpdatedAt = (props: UpdatedAtProps) => {
+    const { t } = useTranslation()
+
+    return (
+        <span>
+            {t('Updated at', { date: formatDateAsRuFull(props.updated_at) })}
+        </span>
+    );
+}
 

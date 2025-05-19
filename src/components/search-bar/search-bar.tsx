@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { debounce } from 'lodash';
 import { observer } from 'mobx-react-lite';
@@ -12,6 +13,8 @@ import { Input, Overlay, SearchBarStyled, Select } from './search-bar.style';
 import { SearchResults } from './search-results';
 
 export const SearchBar = observer(() => {
+    const { t } = useTranslation()
+
     const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         reposMediator.searchTerm = e.target.value;
     }, []);
@@ -47,7 +50,7 @@ export const SearchBar = observer(() => {
                             reposMediator.userIsSearching = true;
                         }}
                         type="text"
-                        placeholder="Search..."
+                        placeholder={`${t("Search")}...`}
                         $isSearching={reposMediator.userIsSearching}
                         value={reposMediator.searchTerm}
                         onChange={onInputChange}
@@ -56,7 +59,7 @@ export const SearchBar = observer(() => {
                         <>
                             <Select>
                                 <span>
-                                    <b>Sort by </b>
+                                    <b>{t('Sort by')} </b>
                                 </span>
                                 <select value={reposMediator.requestSortBy as string} onChange={handleRequestSort}>
                                     {requestSortOptions.map((option) => (
@@ -70,7 +73,7 @@ export const SearchBar = observer(() => {
                             {reposMediator.searchTerm && reposMediator.searchItems.length > 1 && (
                                 <div>
                                     <span>
-                                        <b>Sort results by </b>
+                                        <b>{t('Sort results by')} </b>
                                     </span>
                                     <select value={reposMediator.sortBy as string} onChange={handleSort}>
                                         {sortOptions.map((option) => (
