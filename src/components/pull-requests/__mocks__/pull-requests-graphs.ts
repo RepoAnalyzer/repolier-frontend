@@ -1,7 +1,7 @@
 import { Graph } from "types/graph";
 
-export const pullRequestsGraphs: Record<string, Graph> = {
-    0: {
+export const pullRequestsGraphs: Record<number, Graph> = {
+    2504556434: {
         "nodes": [
             { "id": "Champtercier", "group": 1 },
             { "id": "Cravatte", "group": 1 },
@@ -30,7 +30,7 @@ export const pullRequestsGraphs: Record<string, Graph> = {
             { "source": "Listolier", "target": "OldMan", "value": 10 },
         ],
     },
-    1: {
+    2012215313: {
         "nodes": [
             { "id": "Myriel", "group": 1 },
             { "id": "Napoleon", "group": 1 },
