@@ -215,6 +215,7 @@ export const PullRequests = (props: PullRequestsProps) => {
                     key={pullRequest.id}
                     pullRequest={pullRequest}
                     score={getPullRequestScore(pullRequest, index)}
+                    graph={pullRequestsGraphs[pullRequest.id]}
                     toxicity={toxicity[pullRequest.id]}
                 />
             ))}
