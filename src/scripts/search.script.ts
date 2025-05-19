@@ -41,7 +41,7 @@ export class SearchTS implements TransactionScript {
         } catch (error) {
             if (error instanceof Error) {
                 runInAction(() => {
-                    this._error = error as Error;
+                    this._error = error;
                 });
             }
         }
