@@ -16,6 +16,8 @@ import { pullRequestsGraphs } from './__mocks__/pull-requests-graphs';
 import { RepoPullRequestScore } from './pull-request-score';
 import { PullRequestsNetworkGraph } from './pull-requests-network-graph';
 import { useGetPullRequestScore } from './use-get-pull-request-score.hook';
+import { Toxicity } from 'types/toxicity';
+import { toxicity } from './__mocks__/toxicity';
 
 export type PullRequestsProps = {
     pullRequests: RepoPullRequest[]
@@ -165,10 +167,11 @@ export type PullRequestProps = {
     pullRequest: RepoPullRequest;
     score: TRepoPullRequestScore;
     graph?: Graph;
+    toxicity?: Toxicity;
 }
 
 const PullRequest = memo((props: PullRequestProps) => {
-    const { pullRequest, score, graph } = props;
+    const { pullRequest, score, graph, toxicity } = props;
 
     return (
         <PullRequestStyled header={
@@ -192,9 +195,7 @@ const PullRequest = memo((props: PullRequestProps) => {
                         </PullRequestBodyAccordionItem>
                     )}
                     <PullRequestBodyAccordionItem header={<AccordionHeader><GiRadioactive /> Анализ токсичности</AccordionHeader>}>
-                        Это сообщение содержит прямую и недвусмысленную фразу. Независимо от технического контекста, это крайне оскорбительное и токсичное
-                        высказывание, которое абсолютно неприемлемо. Даже если автор пытался использовать сарказм или метафору, содержание сообщения чрезвычайно вредно и требует немедленного вмешательства.
-                        Учитывая серьезность и потенциально травмирующий характер сообщения, оценка максимально близка к токсичной.
+                        <GHMarkdown>{toxicity?.explanation}</GHMarkdown>
                     </PullRequestBodyAccordionItem>
                 </Accordion>
             </PullRequestBody>
@@ -210,7 +211,12 @@ export const PullRequests = (props: PullRequestsProps) => {
     return (
         <PullRequestsStyled allowMultiple transition transitionTimeout={TRANSITION_TIMEOUT}>
             {pullRequests.map((pullRequest, index) => (
-                <PullRequest key={pullRequest.id} pullRequest={pullRequest} score={getPullRequestScore(pullRequest, index)} graph={pullRequestsGraphs[index]} />
+                <PullRequest
+                    key={pullRequest.id}
+                    pullRequest={pullRequest}
+                    score={getPullRequestScore(pullRequest, index)}
+                    toxicity={toxicity[pullRequest.id]}
+                />
             ))}
         </PullRequestsStyled>
     );
