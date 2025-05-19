@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { GiRadioactive } from 'react-icons/gi';
 import { LiaScrollSolid } from "react-icons/lia";
 import { PiGraphFill } from "react-icons/pi";
 import { Accordion, AccordionItem } from '@szhsin/react-accordion';
@@ -190,6 +191,11 @@ const PullRequest = memo((props: PullRequestProps) => {
                             <PullRequestsNetworkGraph width={1100} height={340} graph={graph} />
                         </PullRequestBodyAccordionItem>
                     )}
+                    <PullRequestBodyAccordionItem header={<AccordionHeader><GiRadioactive /> Анализ токсичности</AccordionHeader>}>
+                        Это сообщение содержит прямую и недвусмысленную фразу. Независимо от технического контекста, это крайне оскорбительное и токсичное
+                        высказывание, которое абсолютно неприемлемо. Даже если автор пытался использовать сарказм или метафору, содержание сообщения чрезвычайно вредно и требует немедленного вмешательства.
+                        Учитывая серьезность и потенциально травмирующий характер сообщения, оценка максимально близка к токсичной.
+                    </PullRequestBodyAccordionItem>
                 </Accordion>
             </PullRequestBody>
         </PullRequestStyled >
