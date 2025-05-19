@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { styled } from 'styled-components';
 
@@ -6,7 +7,6 @@ import { RepoLink } from 'components/repo-link';
 import { reposMediator } from 'components/repos/repos.mediator';
 
 import { LanguagesPie } from './languages-pie';
-import { useTranslation } from 'react-i18next';
 
 export const LanguagesPies = styled.div`
     margin-top: 36px;
@@ -23,7 +23,7 @@ export const LanguagesBlock = observer(() => {
     }
     const languagesMap = reposMediator.services.analytics.languages.itemMap;
 
-    const headingEl = <h2>{t('Programming languages') }</h2>
+    const headingEl = <h2>{t('Programming languages')}</h2>
 
     if (languagesMap.size < 1) {
         return headingEl;

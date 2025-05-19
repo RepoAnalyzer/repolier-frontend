@@ -21,6 +21,7 @@ export const CreatedAt = (props: CreatedAtProps) => {
 export type UpdatedAtProps = {
     updated_at: string;
 }
+
 export const UpdatedAt = (props: UpdatedAtProps) => {
     const { t } = useTranslation()
 

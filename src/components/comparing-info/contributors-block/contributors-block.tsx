@@ -35,7 +35,7 @@ export const ContributorsBlock = observer(() => {
                         <Contributors key={repoFullName}>
                             {repo && (
                                 <span>
-                                    {t('Contributions for') } <RepoLink repo={repo} />
+                                    {t('Contributions for')} <RepoLink repo={repo} />
                                 </span>
                             )}
                             {contributorsForRepo.length < 1 ? (
